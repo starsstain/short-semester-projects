@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>小区物业管理系统</title>
+<style>
+html,body {
+	width: 100%;
+	height: 100%;
+	font-family: "Microsoft Yahei", "Segoe UI", "SimSun", Arial;
+	font-size:14px;
+	overflow:hidden;
+	background: #f5f7fa;
+}
+body,h1,h3,ul,li {
+	margin: 0;
+	padding: 0;
+}
+h3,th{
+	font-weight:normal;
+}
+ul {
+	list-style-type: none;
+}
+a{
+	text-decoration: none;
+	color: inherit;
+}
+
+.header {
+	width: 100%;
+	height: 60px;
+	position: absolute;
+	top: 0;
+	line-height: 60px;
+	background: linear-gradient(135deg, #0075C7, #005DA6);
+	border-bottom: none;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 0 25px;
+	box-sizing: border-box;
+	box-shadow: 0 2px 15px rgba(0, 117, 199, 0.2);
+	z-index: 1000;
+}
+
+.header-left {
+	display: flex;
+	align-items: center;
+	gap: 15px;
+}
+
+.logo {
+	width: 40px;
+	height: 40px;
+	vertical-align: middle;
+	background: rgba(255, 255, 255, 0.9);
+	border-radius: 8px;
+	padding: 5px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.header h1 {
+	color: white;
+	font-size: 22px;
+	margin: 0;
+	font-weight: 600;
+	text-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.user-info {
+	display: flex;
+	align-items: center;
+	gap: 25px;
+	color: white;
+	font-size: 14px;
+}
+
+.user-name {
+	color: white;
+	font-weight: 600;
+	font-size: 16px;
+	padding: 8px 15px;
+	background: rgba(255, 255, 255, 0.1);
+	border-radius: 20px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.logout-btn {
+	color: white;
+	padding: 8px 20px;
+	border: 2px solid rgba(255, 255, 255, 0.3);
+	border-radius: 20px;
+	background: rgba(255, 255, 255, 0.1);
+	cursor: pointer;
+	transition: all 0.3s ease;
+	font-size: 14px;
+	font-weight: 500;
+}
+
+.logout-btn:hover {
+	color: white;
+	border-color: white;
+	background: rgba(255, 255, 255, 0.2);
+	transform: translateY(-2px);
+	box-shadow: 0 4px 12px rgba(255, 255, 255, 0.15);
+}
+
+.mainBox {
+	width: 100%;
+	position: absolute;
+	top: 60px;
+	bottom: 0;
+}
+
+.mainBox .leftBox {
+	height: 100%;
+	width: 260px;
+	float: left;
+	overflow-y: auto;
+	overflow-x: hidden;
+	background: white;
+	font-size: 16px;
+	font-family: "Microsoft Yahei", "SimSun", Arial;
+	border-right: 1px solid #E1E8ED;
+	box-shadow: 2px 0 15px rgba(0, 0, 0, 0.05);
+	transition: all 0.3s ease;
+}
+
+/* 一级菜单样式 */
+.menuItem > a {
+	padding-left: 25px;
+	width: 100%;
+	height: 55px;
+	background-color: white;
+	border-bottom: solid 1px #F0F0F0;
+	display: block;
+	line-height: 55px;
+	color: #555;
+	transition: all 0.3s ease;
+	position: relative;
+	cursor: pointer;
+	font-weight: 500;
+}
+
+.menuItem > a::after {
+	content: '\25B6';
+	position: absolute;
+	right: 15px;
+	top: 0;
+	font-size: 12px;
+	transition: transform 0.3s ease;
+}
+
+.menuItem > a:hover {
+	background: linear-gradient(135deg, #f0f7ff, #e6f2ff);
+	color: #0075C7;
+	padding-left: 30px;
+}
+
+.menuItem > a.active {
+	background: linear-gradient(135deg, #e6f2ff, #d1e7ff);
+	color: #0075C7;
+	border-left: 4px solid #0075C7;
+}
+
+.menuItem > a.active::after {
+	transform: rotate(90deg);
+}
+
+/* 二级菜单样式 */
+.submenu {
+	background: #f8f9fa;
+	display: none;
+	padding-left: 0;
+	margin: 0;
+	border-top: 1px solid #F0F0F0;
+}
+
+.submenu.show {
+	display: block;
+}
+
+.submenu li {
+	list-style: none;
+}
+
+.submenu a {
+	padding-left: 45px;
+	width: 100%;
+	height: 45px;
+	background-color: #f8f9fa;
+	display: block;
+	line-height: 45px;
+	color: #666;
+	transition: all 0.3s ease;
+	font-size: 14px;
+	border-bottom: 1px solid #F5F5F5;
+}
+
+.submenu a:hover {
+	background: #e6f2ff;
+	color: #0075C7;
+	padding-left: 50px;
+}
+
+.menuItem img {
+	width: 18px;
+	height: 18px;
+	vertical-align: middle;
+	margin-right: 12px;
+}
+
+.mainBox .rightBox {
+	height: 100%;
+	margin-left: 260px;
+	padding: 0;
+	border-left: 1px solid #E1E8ED;
+	overflow: hidden;
+	background: #f5f7fa;
+}
+
+/* iframe样式 */
+#aa {
+	width: 100%;
+	height: 100%;
+	border: none;
+	display: block;
+	overflow: auto;
+	box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.05);
+}
+
+/* 隐藏不必要的按钮 */
+.slideBtn {
+	display: none;
+}
+</style>
+ 
+</head>
+
+<body>
+	<div class="header">
+		<div class="header-left">
+			<!-- 左上角logo -->
+			<img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMCIgaGVpZ2h0PSIzMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiPjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSIjMDA3NUM3Ii8+PHRleHQgeD0iNTAiIHk9IjU1IiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjUiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5TTS48L3RleHQ+PC9zdmc+" alt="小区物业管理系统logo" class="logo">
+			<h1>小区物业管理系统</h1>
+		</div>
+		<div class="user-info">
+			<div>
+				<span class="user-name" id="userDisplay">管理员</span>
+			</div>
+			<button class="logout-btn" onclick="goToFrontend()">返回前端</button>
+			<button class="logout-btn" onclick="logout()">注销</button>
+		</div>
+	</div>
+	<div class="mainBox">
+		<div class="leftBox">
+			<div class="menuItem zzjg">
+				<a href="#" onclick="toggleSubmenu(this); return false;">业主管理</a>
+				<ul class="submenu">
+					<li><a href="#" onclick="loadPage('ownermgr.html'); return false;">业主信息管理</a></li>
+					<li><a href="#" onclick="loadPage('ownermgr.html'); return false;">业主家庭成员</a></li>
+					<li><a href="#" onclick="loadPage('ownermgr.html'); return false;">业主车辆管理</a></li>
+					<li><a href="#" onclick="loadPage('ownermgr.html'); return false;">业主权限设置</a></li>
+				</ul>
+			</div>
+			<div class="menuItem wghf">
+				<a href="#" onclick="toggleSubmenu(this); return false;">房屋管理</a>
+				<ul class="submenu">
+					<li><a href="#" onclick="loadPage('housemgr.html'); return false;">房屋基本信息</a></li>
+					<li><a href="#" onclick="loadPage('housemgr.html'); return false;">房屋状态管理</a></li>
+					<li><a href="#" onclick="loadPage('housemgr.html'); return false;">房屋类型管理</a></li>
+					<li><a href="#" onclick="loadPage('housemgr.html'); return false;">房屋面积管理</a></li>
+				</ul>
+			</div>
+			<div class="menuItem repair">
+				<a href="#" onclick="toggleSubmenu(this); return false;">维修管理</a>
+				<ul class="submenu">
+					<li><a href="#" onclick="loadPage('repairmgr.html'); return false;">维修申请管理</a></li>
+					<li><a href="#" onclick="loadPage('repairmgr.html'); return false;">维修人员管理</a></li>
+					<li><a href="#" onclick="loadPage('repairmgr.html'); return false;">维修记录查询</a></li>
+					<li><a href="#" onclick="loadPage('repairmgr.html'); return false;">维修费用管理</a></li>
+				</ul>
+			</div>
+			<div class="menuItem payment">
+				<a href="#" onclick="toggleSubmenu(this); return false;">缴费管理</a>
+				<ul class="submenu">
+					<li><a href="#" onclick="loadPage('paymentmgr.html'); return false;">物业费管理</a></li>
+					<li><a href="#" onclick="loadPage('paymentmgr.html'); return false;">水电费管理</a></li>
+					<li><a href="#" onclick="loadPage('paymentmgr.html'); return false;">停车费管理</a></li>
+					<li><a href="#" onclick="loadPage('paymentmgr.html'); return false;">缴费记录查询</a></li>
+				</ul>
+			</div>
+			<div class="menuItem">
+				<a href="#" onclick="toggleSubmenu(this); return false;">社区管理</a>
+				<ul class="submenu">
+					<li><a href="#" onclick="loadPage('notice.html'); return false;">公告信息管理</a></li>
+					<li><a href="#" onclick="loadPage('ownermgr.html'); return false;">活动信息管理</a></li>
+					<li><a href="#" onclick="loadPage('ownermgr.html'); return false;">投诉建议管理</a></li>
+					<li><a href="#" onclick="loadPage('ownermgr.html'); return false;">访客登记管理</a></li>
+				</ul>
+			</div>
+			<div class="menuItem">
+				<a href="#" onclick="toggleSubmenu(this); return false;">系统设置</a>
+				<ul class="submenu">
+					<li><a href="#" onclick="loadPage('ownermgr.html'); return false;">管理员设置</a></li>
+					<li><a href="#" onclick="loadPage('ownermgr.html'); return false;">系统参数设置</a></li>
+					<li><a href="#" onclick="loadPage('ownermgr.html'); return false;">数据备份恢复</a></li>
+					<li><a href="#" onclick="loadPage('log.html'); return false;">操作日志查询</a></li>
+				</ul>
+			</div>
+		</div>
+		<div class="rightBox">
+			<iframe frameborder="0" scrolling="auto" src="ownermgr.html" id="aa"></iframe>
+		</div>
+	</div>
+	
+	<script>
+		// 检查用户登录状态
+		function checkLogin() {
+			try {
+				const userStr = localStorage.getItem('user');
+				if (!userStr) {
+					// 未登录，跳转到登录页
+					alert('请先登录');
+					window.location.href = 'login.html';
+					return null;
+				}
+				
+				const user = JSON.parse(userStr);
+				return user;
+			} catch (e) {
+				console.error('读取用户信息失败:', e);
+				window.location.href = 'login.html';
+				return null;
+			}
+		}
+		
+		// 显示用户信息
+		function displayUserInfo() {
+			const user = checkLogin();
+			if (user) {
+				const userDisplay = document.getElementById('userDisplay');
+				userDisplay.textContent = user.name || user.username || '管理员';
+			}
+		}
+		
+		// 注销功能
+		function logout() {
+			if (confirm('确定要注销吗？')) {
+				localStorage.removeItem('user');
+				window.location.href = 'login.html';
+			}
+		}
+		
+		// 返回前端首页
+		function goToFrontend() {
+			window.location.href = '../index.html';
+		}
+		
+		// 加载页面到iframe
+		function loadPage(pageUrl) {
+			const iframe = document.getElementById('aa');
+			iframe.src = pageUrl;
+			
+			// 检查页面是否存在
+			iframe.onload = function() {
+				console.log('页面加载成功: ' + pageUrl);
+			};
+			
+			iframe.onerror = function() {
+				console.error('页面加载失败: ' + pageUrl);
+				iframe.src = 'error.html';
+			};
+		}
+		
+		// 切换二级菜单显示/隐藏
+		function toggleSubmenu(linkElement) {
+			// 查找对应的子菜单
+			const submenu = linkElement.nextElementSibling;
+			if (!submenu || !submenu.classList.contains('submenu')) {
+				return;
+			}
+			
+			// 切换子菜单的显示状态
+			submenu.classList.toggle('show');
+			
+			// 切换当前链接的active类
+			linkElement.classList.toggle('active');
+			
+			// 如果当前子菜单被显示，关闭其他所有子菜单
+			if (submenu.classList.contains('show')) {
+				const allSubmenus = document.querySelectorAll('.submenu');
+				const allMenuLinks = document.querySelectorAll('.menuItem > a');
+				
+				allSubmenus.forEach(item => {
+					if (item !== submenu) {
+						item.classList.remove('show');
+					}
+				});
+				
+				allMenuLinks.forEach(item => {
+					if (item !== linkElement) {
+						item.classList.remove('active');
+					}
+				});
+			}
+		}
+		
+		// 页面加载时检查登录状态
+		document.addEventListener('DOMContentLoaded', function() {
+			displayUserInfo();
+		});
+	</script>
+</body>
+</html>
+
+
+

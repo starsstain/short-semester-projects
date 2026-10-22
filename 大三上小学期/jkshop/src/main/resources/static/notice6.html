@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小区安全巡查</title>
+    <script src="js/vue.js"></script>
+    <script src="js/base.js"></script>
+    <link rel="stylesheet" href="css/webindex.css">
+</head>
+<body>
+    <div class="container" id="app">
+        <!-- 顶部导航�?(与其他页面保持一�? -->
+        <header class="header">
+            <div class="logo">
+                <img src="img/logo.png" alt="小区物业">
+                <h1>小区物业管理系统</h1>
+            </div>
+            
+            <div class="search-box">
+                <input type="text" placeholder="搜索房屋..." class="search-input" v-model="searchKeyword" @keyup.enter="searchHouse">
+                <button class="search-btn" @click="searchHouse">
+                    <img src="img/logo.png" alt="搜索" style="width: 20px; height: 20px; object-fit: contain;">
+                </button>
+            </div>
+            
+            <div class="user-menu">
+                <div class="user-info">
+                    <span v-if="user && user.name">
+                        {{ user.name }}
+                        <a href="javascript:void(0);" @click="logout" class="logout">退出登录</a>
+                    </span>
+                    <span v-else>
+                        <a href="login.html">登录</a> | 
+                        <a href="register.html">注册</a>
+                    </span>
+                </div>
+                
+                
+            </div>
+        </header>
+
+        <!-- 通知内容�?-->
+        <div class="notice-container">
+            <div class="notice-detail">
+                <h2>小区安全巡查</h2>
+                <div class="notice-meta">
+                    <span class="notice-date">2025-01-10</span>
+                    <span class="notice-author">物业管理处</span>
+                </div>
+                <div class="notice-content">
+                    <p>尊敬的业主：</p>
+                    <p>为加强小区安全管理，确保业主生命财产安全，物业管理处决定从2025年1月15日起，加强夜间安全巡逻。现将有关事项通知如下：</p>
+                    
+                    <h3>一、巡逻时间</h3>
+                    <p>夜间巡逻：20:00-次日06:00</p>
+                    <p>日间巡逻：08:00-20:00（正常巡逻）</p>
+                    
+                    <h3>二、巡逻范围</h3>
+                    <ul>
+                        <li>小区各栋楼的楼道、电梯间</li>
+                        <li>小区内的道路、停车场</li>
+                        <li>小区的围墙、出入口</li>
+                        <li>小区的公共设施区域</li>
+                    </ul>
+                    
+                    <h3>三、巡逻方式</h3>
+                    <ul>
+                        <li>增加巡逻频次：夜间巡逻每2小时一次，重要区域1小时一次</li>
+                        <li>增加巡逻人员：从原来的2人增加到4人</li>
+                        <li>配备巡逻装备：手电筒、对讲机、警棍等</li>
+                        <li>使用巡逻记录系统：记录巡逻时间、地点、发现的问题等</li>
+                    </ul>
+                    
+                    <h3>四、安全提示</h3>
+                    <ul>
+                        <li>请业主关好门窗，尤其是夜间睡觉前要检查门窗是否关好</li>
+                        <li>请业主不要将贵重物品放在显眼的位置</li>
+                        <li>请业主不要将车辆停放在非停车位上，以免影响巡逻</li>
+                        <li>请业主不要在小区内焚烧垃圾、燃放鞭炮等</li>
+                        <li>请业主提高警惕，发现可疑人员或情况及时向物业或警方报告</li>
+                    </ul>
+                    
+                    <h3>五、联系方式</h3>
+                    <p>物业值班电话：400-888-8888</p>
+                    <p>报警电话：110</p>
+                    
+                    <p>物业管理处将竭诚为业主服务，共同维护小区的安全与稳定！</p>
+                    <p>物业管理处</p>
+                    <p>2025年1月10日</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 页脚 -->
+        <footer class="footer">
+            <div class="footer-content">
+                <p>© 2025 小区物业管理系统 版权所有</p>
+                <p>物业电话：400-888-8888</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                user: null,
+                searchKeyword: ''
+            },
+            methods: {
+                // 更新登录状态
+                updateLoginStatus() {
+                    var userStr = localStorage.getItem('user');
+                    try {
+                        this.user = JSON.parse(userStr);
+                    } catch (e) {
+                        this.user = null;
+                    }
+                },
+                
+                // 搜索房屋
+                searchHouse() {
+                    if (this.searchKeyword.trim()) {
+                        alert(`搜索: ${this.searchKeyword}`);
+                    }
+                },
+                
+                // 注销
+                logout() {
+                    localStorage.removeItem('user');
+                    this.user = null;
+                    window.location.href = 'index.html';
+                }
+            },
+            created() {
+                this.updateLoginStatus();
+            }
+        });
+    </script>
+    
+    <style>
+        /* 通知详情页样�?*/
+        .notice-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .notice-detail {
+            margin-bottom: 30px;
+        }
+        
+        .notice-detail h2 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        .notice-meta {
+            color: #999;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        
+        .notice-date,
+        .notice-author {
+            margin-right: 20px;
+        }
+        
+        .notice-content {
+            line-height: 1.8;
+            color: #555;
+        }
+        
+        .notice-content p {
+            margin-bottom: 15px;
+        }
+        
+        .notice-content h3 {
+            margin: 20px 0 10px 0;
+            color: #333;
+        }
+        
+        .notice-content ul,
+        .notice-content ol {
+            margin-bottom: 15px;
+            padding-left: 20px;
+        }
+        
+        .notice-content li {
+            margin-bottom: 8px;
+        }
+        
+        .notice-content strong {
+            color: #333;
+        }
+    </style>
+</body>
+</html>

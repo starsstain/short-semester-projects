@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>亚马逊注册表和礼品赠送</title>
+    <!--引入重置css reset.css -->
+    <link rel="stylesheet" href="./css/reset.css">
+    <!--首页css -->
+    <link rel="stylesheet" href="./css/index.css">
+    <!--公共css -->
+    <link rel="stylesheet" href="./css/style.css">
+    <!--iconfont.css 字体图标-->
+    <link rel="stylesheet" href="./font/iconfont.css">
+    <!--ico小图标 -->
+    <link rel="shortcut icon" href="./img/amazon.png" type="image/x-icon">
+    <!--轮播图-->
+    <link rel="stylesheet" href="./css/轮播图.css">
+    <!--卡片-->
+    <link rel="stylesheet" href="./css/卡片.css">
+    <!--登录-->
+    <link rel="stylesheet" href="./css/登录.css">
+    <!--导航栏语言选择与登录功能-->
+    <link rel="stylesheet" href="./css/导航栏语言选择与登录功能.css">
+    <!--光标-->
+    <link rel="stylesheet" href="./css/光标.css">
+</head>
+<body>
+<!-- 顶部导航栏 -->
+<header class="sticky top-0 z-50">
+<!-- 顶部导航条 -->
+  <div class="top-nav flex justify-between items-center">
+    <div >
+      <img src="./img/amazon.png" alt="">
+    </div>
+<!-- 配送地址 -->
+  <div>
+    <img src="./img/定位.png" alt="">
+  </div>
+  <div class="items-center nav-link-hover">
+    <i class="fa fa-map-marker text-lg mr-1">
+    </i>
+    <div>
+      <p class="text-xs text-gray-300">配送至</p>
+      <p class="text-sm font-medium">北京市</p>
+    </div>
+  </div>
+      <div class="search-bar flex">
+      <select>
+        <option>全部分类</option>
+        <option>Kindle 商店</option>
+        <option>Prime 影片</option>
+        <option>健康和居家</option>
+        <option>優惠</option>
+        <option>女性時尚</option>
+        <option>婴兒</option>
+        <option>家庭和廚房用品</option>
+        <option>寵物用品</option>
+        <option>少女時尚</option>
+        <option>少男時尚</option>
+        <option>工具和家居装修</option>
+        <option>工業與科學用品</option>
+        <option>數位音樂</option>
+        <option>書籍</option>
+        <option>汽車</option>
+        <option>男性時尚</option>
+        <option>美容與個人護理</option>
+        <option>藝術與工藝品</option>
+        <option>行李箱與旅行配件</option>
+        <option>软體</option>
+        <option>運動和戶外休閒</option>
+        <option>電子產品</option>
+        <option>電影和電視</option>
+        <option>電玩遊戲</option>
+        <option>電腦</option>
+        <option>音樂、CD!與黑膠唱片</option>
+      </select>
+      <input type="text" placeholder="搜尋 Amazon">
+      <button>搜尋</button>
+    </div>
+
+<div class="flex items-center space-x-4 nav-link-hover">
+  <div>
+    <img src="./img/美国国旗.png" alt="">
+  </div>
+  <!-- 语言选择按钮（使用label关联checkbox） -->
+  <label for="language-toggle" class="language-toggle">
+    <div>
+      <p class="text-sm font-medium">中文</p>
+    </div>
+  </label>
+  
+  <!-- 登录按钮（使用label关联checkbox） -->
+  <label for="login-toggle" class="login-toggle">
+    <div>
+      <p class="text-xs text-gray-300">你好，登录</p>
+      <p class="text-sm font-medium">账户及心愿单</p>
+    </div>
+  </label>
+  
+  <div>
+    <p class="text-xs text-gray-300">退货</p>
+    <p class="text-sm font-medium">与订单</p>
+  </div>
+  <div>
+    <img src="./img/车子.png" alt="">
+  </div>
+  <div>
+    <p class="text-sm font-medium">购物车</p>
+  </div>
+</div>
+
+<!-- 语言选择界面 -->
+<input type="checkbox" id="language-toggle" class="modal-toggle">
+<div class="language-modal modal-overlay">
+  <label for="language-toggle" class="modal-close"></label>
+  <div class="modal-content">
+    <h3>选择语言</h3>
+    <label for="language-toggle" class="close-modal">&times;</label>
+    
+    <div class="language-options">
+      <label class="language-option" for="chinese">
+        <input type="radio" id="chinese" name="language" checked>
+        中文
+      </label>
+      <label class="language-option" for="english">
+        <input type="radio" id="english" name="language">
+        English
+      </label>
+      <label class="language-option" for="japanese">
+        <input type="radio" id="japanese" name="language">
+        日本語
+      </label>
+    </div>
+    
+    <button class="apply-language">应用</button>
+  </div>
+</div>
+
+<!-- 登录界面 -->
+<input type="checkbox" id="login-toggle" class="modal-toggle">
+<div class="login-modal modal-overlay">
+  <label for="login-toggle" class="modal-close"></label>
+  <div class="modal-content">
+    <h3>登录账户</h3>
+    <label for="login-toggle" class="close-modal">&times;</label>
+    
+    <form class="login-form">
+      <input type="text" placeholder="输入账号">
+      <input type="password" placeholder="输入密码">
+      <button type="submit">登录</button>
+    </form>
+    
+    <p class="register-link">没有账号？立即注册</p>
+  </div>
+</div>
+
+
+  </div>
+
+  <!-- 主导航栏 -->
+  <div class="main-nav flex">
+      <a href="./Amazon.html">首页 </a>
+  </div>
+</header>
+
+
+<main>
+<div>
+    <img src="./img/第二页.png" alt="">
+</div>
+</main>
+
+
+
+
+</body>
+
+<!-- 页脚 -->
+<footer>
+  <!-- 登录提示区 -->
+  <div class="footer-top">
+    <h3>查看個人化推薦商品</h3>
+    
+    <!-- 登录按钮（关联登录模态框） -->
+    <label for="login-toggle" class="login-button">登入</label>
+    
+    <!-- 注册链接（关联注册模态框） -->
+    <p class="text-xs text-gray">
+      新客戶？
+      <label for="register-toggle" class="register-link">立即註冊</label>
+    </p>
+    
+    <p class="text-xs text-gray"><a href="#">回到頂端</a></p>
+  </div>
+  
+  <!-- 登录模态框（蓝色主题） -->
+  <input type="checkbox" id="login-toggle" class="modal-toggle">
+  <div class="modal-overlay login-overlay">
+    <label for="login-toggle" class="modal-close"></label>
+    <div class="modal-content login-content">
+      <h3>會員登入</h3>
+      <label for="login-toggle" class="close-modal">&times;</label>
+      
+      <form class="login-form">
+        <input type="email" placeholder="電子郵件">
+        <input type="password" placeholder="密碼">
+        <button type="submit">登入</button>
+      </form>
+      
+      <p class="modal-footer">
+        <label for="register-toggle">還不是會員？立即註冊</label>
+      </p>
+    </div>
+  </div>
+  
+  <!-- 注册模态框（橙色主题） -->
+  <input type="checkbox" id="register-toggle" class="modal-toggle">
+  <div class="modal-overlay register-overlay">
+    <label for="register-toggle" class="modal-close"></label>
+    <div class="modal-content register-content">
+      <h3>免費註冊</h3>
+      <label for="register-toggle" class="close-modal">&times;</label>
+      
+      <form class="register-form">
+        <input type="text" placeholder="姓名">
+        <input type="email" placeholder="電子郵件">
+        <input type="password" placeholder="創建密碼">
+        <button type="submit">創建您的 Amazon 帳戶</button>
+      </form>
+      
+      <p class="modal-footer">
+        <label for="login-toggle">已有帳戶？立即登入</label>
+      </p>
+    </div>
+  </div>
+
+
+
+  <!-- 底部链接区 -->
+  <div class="footer-bottom">
+    <div class="footer-links footer-bottom">
+      <div></div>
+      <div>
+        <h3>了解我們</h3>
+        <ul class="space-y-2">
+          <li><a href="#">創業機會</a></li>
+          <li><a href="#">部落格</a></li>
+          <li><a href="#">關於 Amazon</a></li>
+          <li><a href="#">投資人關係</a></li>
+          <li><a href="#">Amazon 裝置</a></li>
+          <li><a href="#">Amazon Science</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>與我們一起獲利</h3>
+        <ul class="space-y-2">
+          <li><a href="#">在 Amazon 上銷售</a></li>
+          <li><a href="#">在 Amazon Business 上銷售</a></li>
+          <li><a href="#">在 Amazon 上銷售應用程式</a></li>
+          <li><a href="#">成為合作夥伴</a></li>
+          <li><a href="#">廣告您的產品</a></li>
+          <li><a href="#">我們的自助服務</a></li>
+          <li><a href="#">成為 Amazon Hub 運送合作夥伴</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Amazon 支付商品</h3>
+        <ul class="space-y-2">
+          <li><a href="#">請點選購物車</a></li>
+          <li><a href="#">重新輸入我的帳單</a></li>
+          <li><a href="#">Amazon 貨幣轉換器</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>讓我們助您一臂之力</h3>
+        <ul class="space-y-2">
+          <li><a href="#">Amazon 和新型冠狀病毒 (COVID-19)</a></li>
+          <li><a href="#">您的帳戶</a></li>
+          <li><a href="#">您的訂單</a></li>
+          <li><a href="#">運費和政策</a></li>
+          <li><a href="#">退貨和換貨</a></li>
+          <li><a href="#">管理我的內容和裝置</a></li>
+          <li><a href="#">協助</a></li>
+        </ul>
+      </div>
+      <div></div>
+    </div>
+
+    <div class="footer-brand footer-bottom">
+      </button><a href="#"></a><img src="./img/Amazon2.png" alt="Amazon"></a> <!-- 本地Logo图片 --></button>
+    </div>
+
+    <div class="footer-lang footer-bottom">
+      <button>繁體中文</button>
+      <button>US$ USD - 美國 美元</button>
+      <button>美國</button>
+    </div>
+  </div>
+  <div>
+    <div class="footer-bottom-links ">
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div>
+        <h3>Amazon Music</h3>
+        <ul class="space-y-2">
+          <li><a href="#">串流百萬首歌</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Amazon Advertising</h3>
+        <ul class="space-y-2">
+          <li><a href="#">尋找、吸引並接觸客戶</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>6pm</h3>
+        <ul class="space-y-2">
+          <li><a href="#">積點購物時尚品牌</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>AbeBooks</h3>
+        <ul class="space-y-2">
+          <li><a href="#">圖書、藝術和收藏品</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>ACX</h3>
+        <ul class="space-y-2">
+          <li><a href="#">有聲書出版讓事情孌簡單</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>在 Amazon 上銷售</h3>
+        <ul class="space-y-2">
+          <li><a href="#">啟用消售帳戶</a></li>
+        </ul>
+      </div>
+      <div></div>
+      <div></div>
+      <div>
+        <h3>Veeqo</h3>
+        <ul class="space-y-2">
+          <li><a href="#">Shipping SoftwareInventoryManagement</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Amazon WebServices</h3>
+        <ul class="space-y-2">
+          <li><a href="#">可調整的雲端運算服務</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Audible</h3>
+        <ul class="space-y-2">
+          <li><a href="#">下载有聲書</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Box Office Mojo</h3>
+        <ul class="space-y-2">
+          <li><a href="#">尋找電影票蘅裒房資料</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>GOODREAD</h3>
+        <ul class="space-y-2">
+          <li><a href="#">書評和推蔫</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>IMDb</h3>
+        <ul class="space-y-2">
+          <li><a href="#">電影、電視節目和名人</a></li>
+        </ul>
+      </div>
+      <div></div>
+      <div></div>
+      <div>
+        <h3>Prime Video Diect</h3>
+        <ul class="space-y-2">
+          <li><a href="#">發佈影片讓事情簡單</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Shopbop</h3>
+        <ul class="space-y-2">
+          <li><a href="#">設計師時尚品牌</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Woot!</h3>
+        <ul class="space-y-2">
+          <li><a href="#">優惠和惡作劇</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Zappos</h3>
+        <ul class="space-y-2">
+          <li><a href="#">鞋子和服飾</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Ring</h3>
+        <ul class="space-y-2">
+          <li><a href="#">智慧居家保全系統</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Eero WiFi</h3>
+        <ul class="space-y-2">
+          <li><a href="#">串流所有空間的 4K視訊</a></li>
+        </ul>
+      </div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div>
+        <h3>Blink</h3>
+        <ul class="space-y-2">
+          <li><a href="#">智慧安全適合每個家庭</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Neighbors App</h3>
+        <ul class="space-y-2">
+          <li><a href="#">即時犯罪與安全警示</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Subscribe withAmazon</h3>
+        <ul class="space-y-2">
+          <li><a href="#">探索並嘗試訂閱服務</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>PiLLPack</h3>
+        <ul class="space-y-2">
+          <li><a href="#">简易合同</a></li>
+        </ul>
+      </div>
+      <div></div>
+      <div></div>
+    </div>
+  </div>
+  <div class="footer-bottom-bottom-links">
+    <div></div>
+    <div></div>
+      <div>
+        <ul class="space-y-2">
+          <li><a href="#">使用條件</a></li>
+        </ul>
+      </div>
+      <div>
+        <ul class="space-y-2">
+          <li><a href="#">隱私權聲明</a></li>
+        </ul>
+      </div>
+      <div>
+        <ul class="space-y-2">
+          <li><a href="#">消費者健康資料隱私披露</a></li>
+        </ul>
+     </div>
+     <div>
+      <ul class="space-y-2">
+          <li><a href="#">您的廣告隱私選擇</a></li>
+        </ul>
+     </div>
+     <div></div>
+     <div></div>
+  </div>
+  <div class="footer-bottom-bottom-links">
+    <p class="copyright">© 1996-2025, Amazon.com, Inc. 或其附屬公司。</p>
+  </div>
+</footer>
+
+</body>
+</html>

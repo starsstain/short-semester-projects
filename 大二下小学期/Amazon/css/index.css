@@ -1,0 +1,296 @@
+/* index.css */
+
+/* 导航栏样式 */
+header {
+  position: sticky;
+  top: 0;
+  z-index: 999;
+}
+.top-nav {
+  background-color: #131921;
+  padding: 8px 16px;
+  color: #ddd;
+}
+.main-nav {
+  background-color: #232f3e;
+  padding: 12px 16px;
+  color: #fff;
+}
+.main-nav .logo {
+  font-size: 24px;
+  font-weight: bold;
+  color: #ff9900;
+}
+.main-nav a {
+  margin-right: 16px;
+  color: #fff;
+  white-space: nowrap;
+}
+
+.search-bar {
+  flex: 1;
+  max-width: 1650px;
+  margin: 0 16px;
+  height: 55px;
+}
+.search-bar select {
+  background-color: #f3f3f3;
+  border: none;
+  padding: 8px;
+  border-radius: 4px 0 0 4px;
+}
+.search-bar input {
+  flex: 1;
+  padding: 8px;
+  border: none;
+}
+.search-bar button {
+  background-color: #ff9900;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 0 4px 4px 0;
+  cursor: pointer;
+}
+.nav-links a {
+  color: #ddd;
+  transition: color 0.3s;
+}
+.nav-links a:hover {
+  color: #fff;
+}
+.cart-count {
+  background-color: #ff9900;
+  color: #fff;
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 50%;
+  margin-left: 8px;
+}
+
+.nav-link-hover {
+    border-radius: 4px;
+    border-width: 1px;
+    border-color: transparent;
+    padding-left: 4px;
+    padding-right: 4px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 200ms;
+}
+.items-center {
+    align-items: center;
+}
+.text-gray-300 {
+    --tw-text-opacity: 1;
+    color: rgb(209 213 219 / var(--tw-text-opacity, 1));
+}
+.text-xs {
+    font-size: 16px;
+    line-height: 16px;
+}
+.text-sm {
+    font-size: 16px;
+    line-height: 20px;
+    color: #fff;
+}
+.font-medium {
+    font-weight: 800;
+}
+
+/* 主内容样式 */
+.banner {
+  background: #ffd866 url('banner.jpg') center/cover no-repeat; /* 本地横幅图片 */
+  padding: 32px;
+  color: #111;
+}
+.banner h1 {
+  font-size: 24px;
+  margin-bottom: 16px;
+}
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+  padding: 32px 0;
+}
+.product-section {
+  background: #fff;
+  padding: 16px;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+.product-section h2 {
+  margin-bottom: 16px;
+  font-size: 17.6px;
+}
+.product-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.product-item {
+  flex: 1;
+  min-width: 100px;
+  text-align: center;
+}
+.product-item img {
+  width: 100%;
+  height: auto;
+  margin-bottom: 8px;
+}
+
+/* 页脚样式 */
+.footer-top {
+  background: #fff;
+  padding: 32px;
+  text-align: center;
+}
+.footer-top button {
+  background: #ffd866;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 16px;
+}
+.footer-bottom {
+  background: #232f3e;
+  color: #ddd;
+  padding: 32px 16px;
+}
+.footer-links {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 32px;
+  margin-bottom: 32px;
+}
+.footer-links h3 {
+  margin-bottom: 16px;
+  font-size: 16px;
+  color: #fff;
+}
+.footer-links a {
+  color: #ddd;
+  font-size: 14px;
+  transition: color 0.3s;
+}
+.footer-links a:hover {
+  color: #fff;
+}
+.footer-brand {
+  text-align: center;
+  margin-bottom: 16px;
+}
+.footer-brand img {
+  height: 30px; /* 本地Logo图片 */
+}
+.footer-lang {
+  text-align: center;
+  margin-bottom: 16px;
+}
+.footer-lang button {
+  background: transparent;
+  color: #ddd;
+  border: 1px solid #ddd;
+  padding: 8px 16px;
+  margin: 0 8px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.footer-bottom-links {
+  background-color: #131921;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 32px;
+  margin-bottom: 0px;
+}
+
+.footer-bottom-bottom-links {
+  background-color: #131921;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 32px;
+  margin-bottom:0px;
+}
+
+.footer-bottom-bottom-links a {
+  color: #ddd;
+  font-size: 10.4px;
+  width: 100%;
+  transition: color 0.3s;
+}
+
+.footer-bottom-bottom-links a:hover {
+  color: #fff;
+}
+
+.footer-bottom-links h3 {
+  margin-bottom: 16px;
+  font-size: 12px;
+  color: #fff;
+}
+
+.footer-bottom-links a {
+  color: #ddd;
+  font-size: 10.4px;
+  transition: color 0.3s;
+}
+.footer-bottom-links a:hover {
+  color: #fff;
+}
+
+.watch button {
+  background-color: #232f3e;
+}
+.copyright {
+  text-align: center;
+  font-size: 12px;
+  color: #aaa;
+  margin-top: 16px;
+}
+/* 响应式适配 */
+@media (max-width: 768px) {
+  .search-bar {
+    margin: 16px 0;
+  }
+  .main-nav {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .nav-links {
+    margin-top: 16px;
+    justify-content: space-between;
+  }
+}
+
+.footer-bottom-left {
+margin-left: 20px;
+}
+
+.footer-bottom-right {
+margin-right: 20px;
+}
+
+
+/* 亚马逊蓝条 */
+.bg-amazon_blue .container {
+  height: 48px; /* 对应 h-16 */
+}
+
+
+
+/* 账户下拉菜单 */
+.relative .hidden {
+  display: none;
+}
+.relative button:focus + .hidden,
+.relative:hover .hidden {
+  display: block;
+}
+
+/* 轻蓝导航栏 */
+.bg-amazon_light_blue .container {
+  height: 40px; /* 对应 h-10 */
+}

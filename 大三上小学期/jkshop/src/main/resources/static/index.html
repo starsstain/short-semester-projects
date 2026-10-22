@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>世纪家园物业 - 首页</title>    
+    <script src="js/vue.js"></script>  
+    <script src="js/base.js"></script>  
+    <script src="js/axios.min.js"></script>  
+    <link rel="stylesheet" href="css/webindex.css">
+</head>
+<body>
+    <div class="container" id="app">
+        <!-- 顶部导航�?-->
+        <header class="header">
+            <div class="logo">
+                <img src="img/logo.png" alt="小区物业服务中心">
+                <h1>小区物业服务中心</h1>
+            </div>
+            
+            <div class="search-box">
+                <input type="text" placeholder="搜索住户/报修/公告..." class="search-input">
+                <button class="search-btn">
+                        <span class="search-icon"></span>
+                    </button>
+            </div>
+            
+            <div class="user-menu">
+                <div class="user-info">
+                    <span v-if="user && user.name">
+                        {{ user.name }}
+                        <a href="javascript:void(0);" @click="logout" class="logout">注销</a>
+                    </span>
+                    <span v-else>
+                        <a href="login.html">登录</a> | 
+                        <a href="register.html">注册</a>
+                    </span>
+                </div>
+                <div class="cart-link">
+                    <a href="admin/index.html">后台入口</a>
+                </div>
+                <div class="order-link">
+                    <a href="notices.html">物业通知</a>
+                </div>
+            </div>
+        </header>
+
+        <!-- 主横幅图 -->
+        <div class="main-banner">
+            <img src="img/wuye.jpg" alt="小区物业欢迎您">
+        </div>
+
+        <!-- 物业服务分类 -->
+        <section class="categories">
+            <h2>物业服务</h2>
+            <div class="category-list">
+                <div v-for="item in typeitems" :key="item.id" class="category-item" @click="showType(item.id)">
+                    <p>{{ item.typename }}</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 服务公告 -->
+        <section class="products">
+            <h2>社区公告</h2>
+            <div class="product-grid">
+                <div v-for="item in goodsitems" :key="item.id" class="product-card" @click="showNotice(item.id)">
+                    <div class="product-img-container">
+                        <img :src="item.imgurl" :alt="item.title" class="product-img">
+                    </div>
+                    <div class="product-info">
+                        <div class="product-title">
+                            {{ item.summary }}
+                        </div>
+                        <div class="product-price">
+                            <span class="price">发布日期: {{ item.publishDate }}</span>
+                            <span class="sales">
+                                <img src="img/sales.png" alt="浏览量">
+                                {{ item.views }}人查看
+                            </span>
+                        </div>
+                        <div class="product-shop">
+                            <img :src="item.imgurl" :alt="item.title">
+                            <span>{{ item.title }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 页脚 -->
+        <footer class="footer">
+            <div class="footer-content">
+                <p>© 2025 世纪家园物业 版权所有</p>
+                <p>物业电话：400-888-8888</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                typeitems: [],
+                goodsitems: [],
+                user: null
+            },
+            methods: {
+                getTypeList() {
+                    var self = this;
+                    // 模拟物业服务分类数据
+                    self.typeitems = [
+                        { id: 1, typename: '维修服务' },
+                        { id: 2, typename: '缴费服务' },
+                        { id: 3, typename: '投诉建议' },
+                        { id: 4, typename: '停车管理' },
+                        { id: 5, typename: '访客登记' },
+                        { id: 6, typename: '门禁管理' },
+                        { id: 7, typename: '绿化养护' },
+                        { id: 8, typename: '清洁服务' }
+                    ];
+                },
+                getGoodsList() {
+                    var self = this;
+                    // 从后端API获取社区公告数据
+                    axios.get('/jkshop/notice/active')
+                        .then(function (response) {
+                            if (response.data && response.data.code === 200 && response.data.data) {
+                                // 处理返回的公告数�?
+                                self.goodsitems = response.data.data.map(function(notice) {
+                                    // 获取公告的前100个字符作为摘要
+                                    var summary = notice.content.length > 100 ? notice.content.substring(0, 100) + '...' : notice.content;
+                                    // 格式化日期
+                                    var publishDate = new Date(notice.createTime).toISOString().slice(0, 10);
+                                    // 根据公告类型分配对应的图片
+                                    var imgurl;
+                                    switch(notice.id) {
+                                        case 1: imgurl = 'img/xiaqu_tingshui.jpg'; break; // 小区停水通知
+                                        case 2: imgurl = 'img/yuanxiaojie.jpg'; break;     // 春节活动安排
+                                        case 3: imgurl = 'img/dianti.png'; break;          // 电梯维护计划
+                                        case 4: imgurl = 'img/lajifenlei.png'; break;      // 垃圾分类指南
+                                        case 5: imgurl = 'img/wuyefei.jpg'; break;         // 物业费缴纳提醒
+                                        case 6: imgurl = 'img/xiaqu_anquan.png'; break;    // 小区安全巡查
+                                        case 7: imgurl = 'img/house1.jpg'; break;         // 新房屋上市
+                                        default: imgurl = 'img/xiaqu_tingshui.jpg';        // 默认图片
+                                    }
+                                    
+                                    return {
+                                        id: notice.id,
+                                        title: notice.title,
+                                        summary: summary,
+                                        publishDate: publishDate,
+                                        views: Math.floor(Math.random() * 200) + 50, // 模拟浏览�?
+                                        imgurl: imgurl
+                                    };
+                                });
+                            } else {
+                                console.error('获取公告失败:', response.data.message);
+                                // 如果API调用失败，使用模拟数�?
+                                self.goodsitems = [
+                                    { id: 1, title: '小区停水通知', summary: '因管道检修，明日14:00-17:00停水', publishDate: '2025-01-15', views: 125, imgurl: 'img/xiaqu_tingshui.jpg' },
+                                    { id: 2, title: '春节活动安排', summary: '元宵节活动报名开始啦', publishDate: '2025-01-14', views: 98, imgurl: 'img/yuanxiaojie.jpg' }
+                                ];
+                            }
+                        })
+                        .catch(function (error) {
+                            console.error('获取公告数据出错:', error);
+                            // 如果API调用失败，使用模拟数�?
+                            self.goodsitems = [
+                                { id: 1, title: '小区停水通知', summary: '因管道检修，明日14:00-17:00停水', publishDate: '2025-01-15', views: 125, imgurl: 'img/xiaqu_tingshui.jpg' },
+                                { id: 2, title: '春节活动安排', summary: '元宵节活动报名开始啦', publishDate: '2025-01-14', views: 98, imgurl: 'img/yuanxiaojie.jpg' }
+                            ];
+                        });
+                },
+                updateLoginStatus() {
+                    var userStr = localStorage.getItem('user');
+                    try {
+                        this.user = JSON.parse(userStr);
+                    } catch (e) {
+                        this.user = null;
+                    }
+                },
+                logout() {
+                    localStorage.removeItem('user');
+                    this.user = null;
+                    window.location.href = 'login.html';
+                },
+                showType(id) {
+                    console.log('显示服务:', id);
+                    // 这里可以添加跳转逻辑
+                },
+                showNotice(id) {
+                    window.location.href = 'notice' + id + '.html';
+                }
+            },
+            created() {
+                this.getTypeList();
+                this.getGoodsList();
+                this.updateLoginStatus();
+            }
+        });
+    </script>
+</body>
+</html>

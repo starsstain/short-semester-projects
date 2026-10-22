@@ -1,0 +1,37 @@
+:root {
+  --amazon-blue: #131921;       /* 亚马逊蓝 */
+  --amazon-light-blue: #232f3e; /* 亚马逊浅蓝 */
+  --amazon-yellow: #febd69;     /* 亚马逊黄 */
+  --amazon-orange: #ff9900;     /* 亚马逊橙 */
+}
+
+/* 布局工具类 */
+.flex { display: flex; }
+.items-center { align-items: center; }
+.justify-between { justify-content: space-between; }
+.space-x-4 > * { margin-left: 1rem; }
+.space-y-2 > * { margin-top: 0.5rem; }
+
+/* 文本工具类 */
+.text-sm { font-size: 0.875rem; }
+.text-xs { font-size: 0.75rem; }
+.font-bold { font-weight: 700; }
+.text-white { color: #fff; }
+.text-gray { color: #555; }
+
+/* 背景与颜色 */
+.bg-amazon_blue { background-color: var(--amazon-blue); }
+.bg-amazon_light_blue { background-color: var(--amazon-light-blue); }
+.bg-amazon_yellow { background-color: var(--amazon-yellow); }
+.bg-amazon_orange { background-color: var(--amazon-orange); }
+
+/* 外观工具类 */
+.rounded { border-radius: 4px; }
+.shadow { box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+.transition { transition: all 0.3s ease; }
+.hidden { display: none; }
+.container { max-width: 1280px; margin: 0 auto; padding: 0 1rem; }
+
+/* 交互辅助类 */
+.nav-link-hover:hover { background-color: rgba(255,255,255,0.1); }
+.product-shadow { box-shadow: 0 2px 5px rgba(0,0,0,0.1); }

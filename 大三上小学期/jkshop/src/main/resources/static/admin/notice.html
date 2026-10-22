@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>公告信息管理</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft Yahei", "SimSun", Arial;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e1e8ed;
+        }
+
+        .header h2 {
+            color: #0075C7;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .add-btn {
+            background: linear-gradient(135deg, #0075C7, #005DA6);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .add-btn:hover {
+            background: linear-gradient(135deg, #0066B3, #004A8F);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 117, 199, 0.3);
+        }
+
+        .search-box {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-box input {
+            flex: 1;
+            max-width: 300px;
+            padding: 10px 15px;
+            border: 1px solid #e1e8ed;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .search-box button {
+            padding: 10px 20px;
+            background-color: #f0f0f0;
+            border: 1px solid #e1e8ed;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .search-box button:hover {
+            background-color: #e0e0e0;
+        }
+
+        .table-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background-color: #f8f9fa;
+            border-bottom: 2px solid #e1e8ed;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e1e8ed;
+        }
+
+        th {
+            font-weight: 600;
+            color: #555;
+            font-size: 14px;
+        }
+
+        td {
+            font-size: 14px;
+            color: #333;
+        }
+
+        .status {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status.active {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .status.inactive {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+
+        .action-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-right: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .edit-btn {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .edit-btn:hover {
+            background-color: #45a049;
+        }
+
+        .delete-btn {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .delete-btn:hover {
+            background-color: #d32f2f;
+        }
+
+        /* 弹窗样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 20px;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 600px;
+            position: relative;
+            animation: modalopen 0.3s ease;
+        }
+
+        @keyframes modalopen {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #555;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #e1e8ed;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .form-group textarea {
+            height: 150px;
+            resize: vertical;
+        }
+
+        .form-group select {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #e1e8ed;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .form-actions {
+            text-align: right;
+            margin-top: 30px;
+        }
+
+        .form-actions button {
+            padding: 10px 20px;
+            margin-left: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .cancel-btn {
+            background-color: #f0f0f0;
+            color: #555;
+        }
+
+        .cancel-btn:hover {
+            background-color: #e0e0e0;
+        }
+
+        .save-btn {
+            background: linear-gradient(135deg, #0075C7, #005DA6);
+            color: white;
+        }
+
+        .save-btn:hover {
+            background: linear-gradient(135deg, #0066B3, #004A8F);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>公告信息管理</h2>
+            <button class="add-btn" onclick="openModal()">添加公告</button>
+        </div>
+
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="搜索公告标题...">
+            <button onclick="searchNotices()">搜索</button>
+        </div>
+
+        <div class="table-container">
+            <table id="noticeTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>标题</th>
+                        <th>内容</th>
+                        <th>创建时间</th>
+                        <th>更新时间</th>
+                        <th>状态</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody id="noticeTableBody">
+                    <!-- 公告数据将通过JavaScript动态加载 -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 添加/编辑公告弹窗 -->
+    <div id="noticeModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h3 id="modalTitle">添加公告</h3>
+            <form id="noticeForm">
+                <input type="hidden" id="noticeId">
+                
+                <div class="form-group">
+                    <label for="title">公告标题</label>
+                    <input type="text" id="title" name="title" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="content">公告内容</label>
+                    <textarea id="content" name="content" required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="status">状态</label>
+                    <select id="status" name="status">
+                        <option value="1">激活</option>
+                        <option value="0">停用</option>
+                    </select>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="cancel-btn" onclick="closeModal()">取消</button>
+                    <button type="submit" class="save-btn">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="../js/axios.min.js"></script>
+    <script>
+        // 页面加载时获取所有公告
+        document.addEventListener('DOMContentLoaded', function() {
+            getNotices();
+        });
+
+        // 获取所有公告
+        function getNotices() {
+            axios.get('/jkshop/notice')
+                .then(function(response) {
+                    if (response.data && response.data.code === 200 && response.data.data) {
+                        displayNotices(response.data.data);
+                    } else {
+                        console.error('获取公告失败:', response.data.message);
+                        alert('获取公告失败: ' + response.data.message);
+                    }
+                })
+                .catch(function(error) {
+                    console.error('获取公告数据出错:', error);
+                    alert('获取公告数据出错，请检查网络连接');
+                });
+        }
+
+        // 显示公告列表
+        function displayNotices(notices) {
+            const tableBody = document.getElementById('noticeTableBody');
+            tableBody.innerHTML = '';
+            
+            notices.forEach(function(notice) {
+                const row = document.createElement('tr');
+                
+                // 格式化日期
+                const createTime = new Date(notice.createTime).toLocaleString();
+                const updateTime = new Date(notice.updateTime).toLocaleString();
+                
+                // 状态显示
+                const statusClass = notice.status === 1 ? 'status active' : 'status inactive';
+                const statusText = notice.status === 1 ? '激活' : '停用';
+                
+                // 内容显示（截取前100个字符）
+                const content = notice.content.length > 100 ? notice.content.substring(0, 100) + '...' : notice.content;
+                
+                row.innerHTML = `
+                    <td>${notice.id}</td>
+                    <td>${notice.title}</td>
+                    <td>${content}</td>
+                    <td>${createTime}</td>
+                    <td>${updateTime}</td>
+                    <td><span class="${statusClass}">${statusText}</span></td>
+                    <td>
+                        <button class="action-btn edit-btn" onclick="editNotice(${notice.id})">编辑</button>
+                        <button class="action-btn delete-btn" onclick="deleteNotice(${notice.id})">删除</button>
+                    </td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+        }
+
+        // 搜索公告
+        function searchNotices() {
+            const searchText = document.getElementById('searchInput').value.toLowerCase();
+            const rows = document.querySelectorAll('#noticeTableBody tr');
+            
+            rows.forEach(function(row) {
+                const title = row.cells[1].textContent.toLowerCase();
+                const content = row.cells[2].textContent.toLowerCase();
+                
+                if (title.includes(searchText) || content.includes(searchText)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        // 打开弹窗
+        function openModal() {
+            document.getElementById('modalTitle').textContent = '添加公告';
+            document.getElementById('noticeForm').reset();
+            document.getElementById('noticeId').value = '';
+            document.getElementById('noticeModal').style.display = 'block';
+        }
+
+        // 关闭弹窗
+        function closeModal() {
+            document.getElementById('noticeModal').style.display = 'none';
+        }
+
+        // 编辑公告
+        function editNotice(id) {
+            axios.get(`/jkshop/notice/${id}`)
+                .then(function(response) {
+                    if (response.data && response.data.code === 200 && response.data.data) {
+                        const notice = response.data.data;
+                        document.getElementById('modalTitle').textContent = '编辑公告';
+                        document.getElementById('noticeId').value = notice.id;
+                        document.getElementById('title').value = notice.title;
+                        document.getElementById('content').value = notice.content;
+                        document.getElementById('status').value = notice.status;
+                        document.getElementById('noticeModal').style.display = 'block';
+                    } else {
+                        console.error('获取公告详情失败:', response.data.message);
+                        alert('获取公告详情失败: ' + response.data.message);
+                    }
+                })
+                .catch(function(error) {
+                    console.error('获取公告详情出错:', error);
+                    alert('获取公告详情出错，请检查网络连接');
+                });
+        }
+
+        // 删除公告
+        function deleteNotice(id) {
+            if (confirm('确定要删除这条公告吗？')) {
+                axios.delete(`/jkshop/notice/${id}`)
+                    .then(function(response) {
+                        if (response.data && response.data.code === 200) {
+                            alert('删除成功');
+                            getNotices(); // 重新加载公告列表
+                        } else {
+                            console.error('删除公告失败:', response.data.message);
+                            alert('删除公告失败: ' + response.data.message);
+                        }
+                    })
+                    .catch(function(error) {
+                        console.error('删除公告出错:', error);
+                        alert('删除公告出错，请检查网络连接');
+                    });
+            }
+        }
+
+        // 表单提交事件
+        document.getElementById('noticeForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const id = document.getElementById('noticeId').value;
+            const title = document.getElementById('title').value;
+            const content = document.getElementById('content').value;
+            const status = parseInt(document.getElementById('status').value);
+            
+            const noticeData = {
+                title: title,
+                content: content,
+                status: status,
+                createTime: id ? new Date() : new Date(),
+                updateTime: new Date()
+            };
+            
+            let apiUrl;
+            let method;
+            
+            if (id) {
+                // 编辑公告
+                apiUrl = `/jkshop/notice`;
+                method = 'put';
+                noticeData.id = parseInt(id);
+            } else {
+                // 添加公告
+                apiUrl = `/jkshop/notice`;
+                method = 'post';
+            }
+            
+            axios({
+                url: apiUrl,
+                method: method,
+                data: noticeData
+            })
+            .then(function(response) {
+                if (response.data && response.data.code === 200) {
+                    alert(id ? '修改成功' : '添加成功');
+                    closeModal();
+                    getNotices(); // 重新加载公告列表
+                } else {
+                    console.error(id ? '修改公告失败:' : '添加公告失败:', response.data.message);
+                    alert((id ? '修改公告失败: ' : '添加公告失败: ') + response.data.message);
+                }
+            })
+            .catch(function(error) {
+                console.error(id ? '修改公告出错:' : '添加公告出错:', error);
+                alert(id ? '修改公告出错，请检查网络连接' : '添加公告出错，请检查网络连接');
+            });
+        });
+
+        // 点击弹窗外部关闭弹窗
+        window.onclick = function(event) {
+            const modal = document.getElementById('noticeModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+</html>

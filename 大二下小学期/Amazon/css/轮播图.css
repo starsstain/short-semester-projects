@@ -1,0 +1,143 @@
+
+/* --------------------------
+   轮播图核心样式配置
+   -------------------------- */
+
+/* 隐藏radio按钮（用于CSS轮播控制） */
+input[type="radio"] {
+  display: none;
+}
+
+/* 轮播图容器 */
+.carousel-container {
+  position: relative;
+  margin-top: 20px; /* 顶部边距，可根据布局调整 */
+  overflow: hidden; /* 超出容器的内容隐藏 */
+}
+
+/* 轮播图标题与描述文字 */
+.carousel-container h1,
+.carousel-container p {
+  text-align: center;
+  margin: 10px 0;
+  color: #333;
+}
+
+/* 轮播幻灯片容器 */
+.carousel-slides {
+  display: flex;
+  width: 300%; /* 3张幻灯片的总宽度 */
+  transition: transform 0.5s ease-in-out; /* 切换过渡动画 */
+}
+
+/* 单张幻灯片样式 */
+.carousel-slides .slide {
+  width: 33.3333%; /* 每张幻灯片占1/3宽度 */
+  flex-shrink: 0;
+}
+
+.carousel-slides img {
+  width: 100%;
+  height: auto;
+  display: block; /* 移除图片底部间隙 */
+}
+
+/* 轮播控制按钮基础样式 */
+.carousel-control {
+  position: absolute;
+  top: 20%;
+  transform: translateY(-50%);
+  background-color: rgba(255, 255, 255, 0.8); /* 半透明白色背景 */
+  color: #444;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%; /* 圆形按钮 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10; /* 确保按钮在幻灯片上方 */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* 阴影效果 */
+  transition: all 0.2s; /* 交互过渡效果 */
+}
+
+/* 左侧切换按钮 */
+.prev {
+  left: 20px;
+}
+
+/* 右侧切换按钮 */
+.next {
+  right: 20px;
+}
+
+/* 按钮悬停效果 */
+.carousel-control:hover {
+  background-color: white;
+  transform: translateY(-50%) scale(1.1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+/* --------------------------
+   轮播图切换逻辑（CSS选择器）
+   -------------------------- */
+
+/* 当第1个radio选中时，显示第1张幻灯片 */
+#slide1:checked ~ .carousel-slides {
+  transform: translateX(0);
+}
+
+/* 当第2个radio选中时，显示第2张幻灯片 */
+#slide2:checked ~ .carousel-slides {
+  transform: translateX(-33.3333%);
+}
+
+/* 当第3个radio选中时，显示第3张幻灯片 */
+#slide3:checked ~ .carousel-slides {
+  transform: translateX(-66.6666%);
+}
+
+
+/* 幻灯片位置切换（4张图的偏移量） */
+#slide1:checked ~ .carousel-slides { transform: translateX(0); }
+#slide2:checked ~ .carousel-slides { transform: translateX(-33.3333%); }
+#slide3:checked ~ .carousel-slides { transform: translateX(-66.6666%); }
+#slide4:checked ~ .carousel-slides { transform: translateX(-100%); }
+
+/* 按钮默认隐藏 */
+.prev-to-slide4, .prev-to-slide1, .prev-to-slide2, .prev-to-slide3 { display: none; }
+.next-to-slide2, .next-to-slide3, .next-to-slide4, .next-to-slide1 { display: none; }
+
+/* 上一张按钮显示逻辑 */
+#slide1:checked ~ .prev-to-slide4 { display: block; } /* 第一张→第四张 */
+#slide2:checked ~ .prev-to-slide1 { display: block; } /* 第二张→第一张 */
+#slide3:checked ~ .prev-to-slide2 { display: block; } /* 第三张→第二张 */
+#slide4:checked ~ .prev-to-slide3 { display: block; } /* 第四张→第三张 */
+
+/* 下一张按钮显示逻辑 */
+#slide4:checked ~ .next-to-slide1 { display: block; } /* 第四张→第一张 */
+#slide1:checked ~ .next-to-slide2 { display: block; } /* 第一张→第二张 */
+#slide2:checked ~ .next-to-slide3 { display: block; } /* 第二张→第三张 */
+#slide3:checked ~ .next-to-slide4 { display: block; } /* 第三张→第四张 */
+
+/* --------------------------
+   响应式适配（可选）
+   -------------------------- */
+@media (max-width: 768px) {
+  .carousel-container {
+    margin-top: 10px;
+  }
+  
+  .carousel-control {
+    width: 30px;
+    height: 30px;
+  }
+  
+  .prev {
+    left: 10px;
+  }
+  
+  .next {
+    right: 10px;
+  }
+}

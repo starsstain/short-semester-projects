@@ -1,0 +1,5 @@
+ # application.yml 示例（无需额外配置，默认即可，若有错误配置请删除）
+spring:
+  web:
+    resources:
+      static-locations: classpath:/static/  # 确保指向static目录

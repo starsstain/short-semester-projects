@@ -1,0 +1,28 @@
+/* 鼠标悬停在图片上时，光标变为抓手 */
+img {
+    cursor: pointer;
+}
+
+/* 鼠标悬停在分类卡片上时，光标变为抓手 */
+.category-card {
+    cursor: pointer;
+}
+
+/* 鼠标悬停在产品列表项上时，光标变为抓手 */
+.product-item,
+.product-item-1,
+.product-item-2 {
+    cursor: pointer;
+}
+
+/* 鼠标悬停在导航链接上时，光标变为抓手 */
+.top-nav a,
+.main-nav a {
+    cursor: pointer;
+}
+
+/* 鼠标悬停在页脚链接上时，光标变为抓手 */
+.footer-links a,
+.footer-bottom-links a {
+    cursor: pointer;
+}

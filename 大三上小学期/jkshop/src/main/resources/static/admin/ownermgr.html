@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>业主管理模块</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios@0.24.0/dist/axios.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .course {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        button.edit {
+            background-color: #28a745;
+        }
+        button.edit:hover {
+            background-color: #218838;
+        }
+        button.delete {
+            background-color: #dc3545;
+        }
+        button.delete:hover {
+            background-color: #c82333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .msg {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            text-align: center;
+        }
+        .msg.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .msg.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .msg.info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+        .popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border-radius: 8px;
+            z-index: 1001;
+            width: 500px;
+            max-width: 90%;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        .popup-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .popup-header h2 {
+            margin: 0;
+            color: #333;
+        }
+        .popup-content {
+            padding: 20px;
+        }
+        .form-item {
+            margin-bottom: 15px;
+        }
+        .form-item label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        .form-item input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .form-footer {
+            margin-top: 20px;
+            text-align: right;
+        }
+        .form-footer button {
+            margin-left: 10px;
+        }
+        .no-data {
+            text-align: center;
+            color: #666;
+            padding: 20px;
+        }
+        .loading {
+            text-align: center;
+            color: #666;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+<div id="app" class="course">
+    <h1>业主管理模块</h1>
+
+    <!-- 新增按钮 -->
+    <div style="margin-bottom:15px;">
+        <button @click="openAdd">新增业主</button>
+        <button @click="refreshList" style="background-color: #17a2b8;">刷新数据</button>
+    </div>
+
+    <!-- 提示消息 -->
+    <div v-if="message" class="msg" :class="msgClass">{{ message }}</div>
+
+    <!-- 加载状态 -->
+    <div v-if="loading" class="loading">加载中...</div>
+
+    <!-- 数据列表 -->
+    <div class="list">
+        <table v-if="userList.length && !loading">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>业主姓名</th>
+                <th>手机</th>
+                <th>邮箱</th>
+                <th>地址</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="u in userList" :key="u.id">
+                <td>{{ u.id }}</td>
+                <td>{{ u.username }}</td>
+                <td>{{ u.phone }}</td>
+                <td>{{ u.email }}</td>
+                <td>{{ u.address }}</td>
+                <td>
+                    <button class="edit" @click="openEdit(u.id)">编辑</button>
+                    <button class="delete" @click="deleteUser(u.id)">删除</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <p v-else-if="!loading" class="no-data">暂无数据</p>
+    </div>
+
+    <!-- 弹窗 -->
+    <div class="overlay" v-show="showModal" @click.self="closeModal"></div>
+    <div class="popup" v-show="showModal">
+        <div class="popup-header">
+            <h2>{{ isEditing ? '编辑业主' : '新增业主' }}</h2>
+        </div>
+        <div class="popup-content">
+            <form @submit.prevent="saveUser">
+                <div class="form-item">
+                    <label>业主姓名 *</label>
+                    <input v-model="user.username" placeholder="请输入业主姓名" required>
+                </div>
+                <div class="form-item">
+                    <label>手机号</label>
+                    <input v-model="user.phone" placeholder="请输入手机号">
+                </div>
+                <div class="form-item">
+                    <label>邮箱</label>
+                    <input v-model="user.email" placeholder="请输入邮箱">
+                </div>
+                <div class="form-item">
+                    <label>地址</label>
+                    <input v-model="user.address" placeholder="请输入地址">
+                </div>
+                <div class="form-footer">
+                    <button type="button" @click="closeModal">取消</button>
+                    <button type="submit">{{ isEditing ? '更新' : '保存' }}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+const app = new Vue({
+    el: '#app',
+    data: {
+        user: { id: null, username: '', phone: '', email: '', address: '' },
+        userList: [],
+        message: '',
+        msgClass: 'info',
+        showModal: false,
+        isEditing: false,
+        loading: false,
+        baseURL: 'http://localhost:80' // 后端API基础URL，根据实际情况调整
+    },
+    mounted() {
+        this.fetchAll();
+    },
+    methods: {
+        showMsg(txt, type = 'info') {
+            this.message = txt;
+            this.msgClass = type;
+            setTimeout(() => this.message = '', 3000);
+        },
+        openAdd() {
+            this.resetForm();
+            this.showModal = true;
+        },
+        openEdit(id) {
+            const user = this.userList.find(u => u.id === id);
+            if (user) {
+                this.user = {...user};
+                this.isEditing = true;
+                this.showModal = true;
+            } else {
+                this.showMsg('业主不存在', 'error');
+            }
+        },
+        closeModal() {
+            this.showModal = false;
+            this.resetForm();
+        },
+        async saveUser() {
+            if (!this.user.username) { 
+                this.showMsg('业主姓名不能为空', 'error'); 
+                return; 
+            }
+
+            this.loading = true;
+            
+            try {
+                let response;
+                if (this.isEditing) {
+                    // 更新业主
+                    response = await axios.put(`${this.baseURL}/jkshop/user`, this.user);
+                    if (response.data.code === 200) {
+                        this.showMsg('更新成功', 'success');
+                    } else {
+                        this.showMsg(response.data.message || '更新失败', 'error');
+                        this.loading = false;
+                        return;
+                    }
+                } else {
+                    // 添加新业主
+                    response = await axios.post(`${this.baseURL}/jkshop/user`, this.user);
+                    if (response.data.code === 200) {
+                        this.showMsg('添加成功', 'success');
+                    } else {
+                        this.showMsg(response.data.message || '添加失败', 'error');
+                        this.loading = false;
+                        return;
+                    }
+                }
+                
+                this.fetchAll();
+                this.closeModal();
+            } catch (error) {
+                console.error('保存业主失败:', error);
+                // 如果是网络错误或其他HTTP错误，显示详细信息
+                if (error.response) {
+                    // 服务器响应了错误状态码
+                    this.showMsg('保存失败: ' + (error.response.data.message || error.response.statusText), 'error');
+                } else if (error.request) {
+                    // 请求发送了但没有收到响应
+                    this.showMsg('网络错误，请检查后端服务是否启动并监听在正确的端口', 'error');
+                } else {
+                    // 其他错误
+                    this.showMsg('保存失败: ' + error.message, 'error');
+                }
+            } finally {
+                this.loading = false;
+            }
+        },
+        async deleteUser(id) {
+            if (!confirm('确定删除该业主？')) return;
+            
+            this.loading = true;
+            
+            try {
+                const response = await axios.delete(`${this.baseURL}/jkshop/user/${id}`);
+                if (response.status === 200) {
+                    this.showMsg('删除成功', 'success');
+                    this.fetchAll();
+                } else {
+                    this.showMsg('删除失败', 'error');
+                }
+            } catch (error) {
+                console.error('删除业主失败:', error);
+                if (error.response) {
+                    this.showMsg('删除失败: ' + (error.response.data.message || error.response.statusText), 'error');
+                } else if (error.request) {
+                    this.showMsg('网络错误，请检查后端服务', 'error');
+                } else {
+                    this.showMsg('删除失败: ' + error.message, 'error');
+                }
+            } finally {
+                this.loading = false;
+            }
+        },
+        async fetchAll() {
+            this.loading = true;
+            
+            try {
+                // 创建axios实例，配置超时时间和错误处理
+                const apiClient = axios.create({
+                    timeout: 10000, // 10秒超时
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const response = await apiClient.get(`${this.baseURL}/jkshop/user`);
+                if (response.data.code === 200) {
+                    this.userList = response.data.data || [];
+                } else {
+                    this.showMsg('获取数据失败: ' + response.data.message, 'error');
+                    this.userList = [];
+                }
+            } catch (error) {
+                console.error('获取业主列表失败:', error);
+                if (error.response) {
+                    // 服务器响应了错误状态码
+                    this.showMsg('获取数据失败: ' + (error.response.data.message || error.response.statusText), 'error');
+                } else if (error.request) {
+                    // 请求发送了但没有收到响应 - 这通常是Network Error的情况
+                    this.showMsg('网络错误：无法连接到后端服务。请确认：\n1. 后端服务已启动\n2. 后端服务监听在 http://localhost:80\n3. 后端允许跨域请求(CORS)', 'error');
+                } else {
+                    // 其他错误
+                    this.showMsg('获取数据失败: ' + error.message, 'error');
+                }
+                this.userList = [];
+            } finally {
+                this.loading = false;
+            }
+        },
+        refreshList() {
+            this.fetchAll();
+        },
+        resetForm() {
+            this.user = { id: null, username: '', phone: '', email: '', address: '' };
+            this.isEditing = false;
+        }
+    }
+});
+</script>
+</body>
+</html>
+
+
+

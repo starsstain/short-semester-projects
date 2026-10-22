@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>物业费缴纳提�?/title>
+    <script src="js/vue.js"></script>
+    <script src="js/base.js"></script>
+    <link rel="stylesheet" href="css/webindex.css">
+</head>
+<body>
+    <div class="container" id="app">
+        <!-- 顶部导航�?(与其他页面保持一�? -->
+        <header class="header">
+            <div class="logo">
+                <img src="img/logo.png" alt="小区物业">
+                <h1>小区物业管理系统</h1>
+            </div>
+            
+            <div class="search-box">
+                <input type="text" placeholder="搜索房屋..." class="search-input" v-model="searchKeyword" @keyup.enter="searchHouse">
+                <button class="search-btn" @click="searchHouse">
+                    <img src="img/logo.png" alt="搜索" style="width: 20px; height: 20px; object-fit: contain;">
+                </button>
+            </div>
+            
+            <div class="user-menu">
+                <div class="user-info">
+                    <span v-if="user && user.name">
+                        {{ user.name }}
+                        <a href="javascript:void(0);" @click="logout" class="logout">退出登录</a>
+                    </span>
+                    <span v-else>
+                        <a href="login.html">登录</a> | 
+                        <a href="register.html">注册</a>
+                    </span>
+                </div>
+                
+                
+            </div>
+        </header>
+
+        <!-- 通知内容�?-->
+        <div class="notice-container">
+            <div class="notice-detail">
+                <h2>物业费缴纳提醒</h2>
+                <div class="notice-meta">
+                    <span class="notice-date">2025-01-11</span>
+                    <span class="notice-author">物业管理处</span>
+                </div>
+                <div class="notice-content">
+                    <p>尊敬的业主：</p>
+                    <p>您好！2025年第一季度物业费缴纳工作已开始，请各位业主及时缴纳。现将有关事项通知如下：</p>
+                    
+                    <h3>一、缴纳对象</h3>
+                    <p>小区所有业主</p>
+                    
+                    <h3>二、缴纳费用</h3>
+                    <ul>
+                        <li>物业费：1.5元/平方米/月</li>
+                        <li>电梯费：0.5元/平方米/月</li>
+                        <li>公共能耗费：0.3元/平方米/月</li>
+                        <li>垃圾清运费：30元/户/月</li>
+                    </ul>
+                    
+                    <h3>三、缴纳时间</h3>
+                    <p>2025年1月1日-2025年3月31日</p>
+                    <p><strong>温馨提示：</strong>请在规定时间内缴纳，逾期将产生滞纳金（按每日0.5‰计算）。</p>
+                    
+                    <h3>四、缴纳方式</h3>
+                    <ol>
+                        <li><strong>线上缴纳：</strong>
+                            <ul>
+                                <li>通过小区微信公众号缴纳：关注"世纪家园物业"微信公众号，进入"业主服务"-"费用缴纳"</li>
+                                <li>通过小区APP缴纳：下载"世纪家园物业"APP，登录后进入"费用管理"-"物业费缴纳"</li>
+                                <li>通过银行转账缴纳：户名：世纪家园物业管理有限公司；账号：1234567890123456789；开户行：中国工商银行XX支行</li>
+                            </ul>
+                        </li>
+                        <li><strong>线下缴纳：</strong>
+                            <ul>
+                                <li>前往物业管理处前台缴纳（支持现金、刷卡、支付宝、微信支付）</li>
+                                <li>地址：小区A�?楼物业管理处</li>
+                                <li>工作时间：周一至周�?8:00-18:00</li>
+                            </ul>
+                        </li>
+                    </ol>
+                    
+                    <h3>五、缴费凭证</h3>
+                    <ul>
+                        <li>线上缴纳后，系统将自动生成电子缴费凭证，可在微信公众号或APP中查看</li>
+                        <li>线下缴纳后，前台工作人员将开具纸质缴费凭证</li>
+                    </ul>
+                    
+                    <h3>六、联系方式</h3>
+                    <p>物业客服热线：400-888-8888</p>
+                    <p>缴费咨询：820-88888888</p>
+                    <p>微信公众号：世纪家园物业</p>
+                    
+                    <p>感谢您对小区物业管理工作的支持与配合！</p>
+                    <p>物业管理处</p>
+                    <p>2025年1月11日</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 页脚 -->
+        <footer class="footer">
+            <div class="footer-content">
+                <p>© 2025 小区物业管理系统 版权所有</p>
+                <p>物业电话：400-888-8888</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                user: null,
+                searchKeyword: ''
+            },
+            methods: {
+                // 更新登录状态
+                updateLoginStatus() {
+                    var userStr = localStorage.getItem('user');
+                    try {
+                        this.user = JSON.parse(userStr);
+                    } catch (e) {
+                        this.user = null;
+                    }
+                },
+                
+                // 搜索房屋
+                searchHouse() {
+                    if (this.searchKeyword.trim()) {
+                        alert(`搜索: ${this.searchKeyword}`);
+                    }
+                },
+                
+                // 注销
+                logout() {
+                    localStorage.removeItem('user');
+                    this.user = null;
+                    window.location.href = 'index.html';
+                }
+            },
+            created() {
+                this.updateLoginStatus();
+            }
+        });
+    </script>
+    
+    <style>
+        /* 通知详情页样�?*/
+        .notice-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .notice-detail {
+            margin-bottom: 30px;
+        }
+        
+        .notice-detail h2 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        .notice-meta {
+            color: #999;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        
+        .notice-date,
+        .notice-author {
+            margin-right: 20px;
+        }
+        
+        .notice-content {
+            line-height: 1.8;
+            color: #555;
+        }
+        
+        .notice-content p {
+            margin-bottom: 15px;
+        }
+        
+        .notice-content h3 {
+            margin: 20px 0 10px 0;
+            color: #333;
+        }
+        
+        .notice-content ul,
+        .notice-content ol {
+            margin-bottom: 15px;
+            padding-left: 20px;
+        }
+        
+        .notice-content li {
+            margin-bottom: 8px;
+        }
+        
+        .notice-content strong {
+            color: #333;
+        }
+    </style>
+</body>
+</html>

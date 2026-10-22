@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>垃圾分类指南</title>
+    <script src="js/vue.js"></script>
+    <script src="js/base.js"></script>
+    <link rel="stylesheet" href="css/webindex.css">
+</head>
+<body>
+    <div class="container" id="app">
+        <!-- 顶部导航�?(与其他页面保持一�? -->
+        <header class="header">
+            <div class="logo">
+                <img src="img/logo.png" alt="小区物业">
+                <h1>小区物业管理系统</h1>
+            </div>
+            
+            <div class="search-box">
+                <input type="text" placeholder="搜索房屋..." class="search-input" v-model="searchKeyword" @keyup.enter="searchHouse">
+                <button class="search-btn" @click="searchHouse">
+                    <img src="img/logo.png" alt="搜索" style="width: 20px; height: 20px; object-fit: contain;">
+                </button>
+            </div>
+            
+            <div class="user-menu">
+                <div class="user-info">
+                    <span v-if="user && user.name">
+                        {{ user.name }}
+                        <a href="javascript:void(0);" @click="logout" class="logout">退出登录</a>
+                    </span>
+                    <span v-else>
+                        <a href="login.html">登录</a> | 
+                        <a href="register.html">注册</a>
+                    </span>
+                </div>
+                
+                
+            </div>
+        </header>
+
+        <!-- 通知内容�?-->
+        <div class="notice-container">
+            <div class="notice-detail">
+                <h2>垃圾分类指南</h2>
+                <div class="notice-meta">
+                    <span class="notice-date">2025-01-12</span>
+                    <span class="notice-author">物业管理处</span>
+                </div>
+                <div class="notice-content">
+                    <p>尊敬的业主：</p>
+                    <p>为响应国家垃圾分类政策，提高小区环境质量，自2025年1月15日起，小区将实施新的垃圾分类标准。现将具体分类指南通知如下：</p>
+                    
+                    <h3>一、垃圾分类标准</h3>
+                    <p>小区将垃圾分为四大类：可回收物、有害垃圾、厨余垃圾和其他垃圾。</p>
+                    
+                    <h4>1. 可回收物（蓝色垃圾桶）</h4>
+                    <p>适宜回收和资源利用的垃圾，主要包括：</p>
+                    <ul>
+                        <li>纸张：报纸、杂志、图书、各种包装纸、办公用纸、广告纸、纸盒等（注意：纸巾和厕所纸由于水溶性太强不可回收）</li>
+                        <li>塑料：各种塑料袋、塑料包装物、一次性塑料餐盒和餐具、牙刷、杯子、矿泉水瓶、塑料玩具、塑料文具、塑料生活用品、洗发水瓶、塑料球、塑料梳子等</li>
+                        <li>玻璃：玻璃瓶和碎玻璃片、镜子、灯泡、暖瓶等</li>
+                        <li>金属：易拉罐、铁皮罐头盒、牙膏皮、废电池（可充电电池、纽扣电池除外）等</li>
+                        <li>布料：废弃衣服、桌布、洗脸巾、书包、鞋子等</li>
+                    </ul>
+                    
+                    <h4>2. 有害垃圾（红色垃圾桶）</h4>
+                    <p>含有对人体健康有害的重金属、有毒的物质或者对环境造成现实危害或者潜在危害的废弃物，主要包括：</p>
+                    <ul>
+                        <li>电池：纽扣电池、充电电池（如手机电池、铅酸电池）等</li>
+                        <li>荧光灯管：日光灯、节能灯等</li>
+                        <li>废药品及其包装物：过期药品、药品胶囊、药片、药品内包装等</li>
+                        <li>废油漆和溶剂及其包装物：废油漆桶、过期指甲油、洗甲水等</li>
+                        <li>废矿物油及其包装物</li>
+                        <li>废含汞温度计、废含汞血压计</li>
+                        <li>废杀虫剂及其包装</li>
+                    </ul>
+                    
+                    <h4>3. 厨余垃圾（绿色垃圾桶）</h4>
+                    <p>居民日常生活及食品加工、饮食服务、单位供餐等活动中产生的垃圾，主要包括：</p>
+                    <ul>
+                        <li>剩菜剩饭</li>
+                        <li>骨头内脏</li>
+                        <li>菜根菜叶</li>
+                        <li>果皮果核</li>
+                        <li>茶叶渣</li>
+                        <li>残枝落叶</li>
+                        <li>废弃食用油等</li>
+                    </ul>
+                    
+                    <h4>4. 其他垃圾（灰色垃圾桶）</h4>
+                    <p>除可回收物、有害垃圾、厨余垃圾以外的其它生活废弃物，主要包括：</p>
+                    <ul>
+                        <li>受污染与无法再生的纸张：卫生纸、纸巾、纸杯、纸尿片等</li>
+                        <li>受污染或其他不可回收的玻璃、塑料袋与其他受污染的塑料制品</li>
+                        <li>不可回收的果皮果核、灰尘渣土等</li>
+                        <li>废弃的陶瓷品、卫生间废纸、烟头、灰土、一次性餐具等</li>
+                    </ul>
+                    
+                    <h3>二、投放要求</h3>
+                    <ul>
+                        <li>投放前，应将垃圾袋装化，袋口扎紧，避免垃圾洒落</li>
+                        <li>投放时，应按垃圾分类标志的提示，分别投放到指定的垃圾桶内</li>
+                        <li>投放后，应将垃圾袋投放到对应垃圾桶，保持垃圾桶周边清洁</li>
+                        <li>厨余垃圾应沥干水分后投放</li>
+                        <li>可回收物应尽量保持清洁干燥，避免污染</li>
+                        <li>有害垃圾应单独投放，避免混放</li>
+                    </ul>
+                    
+                    <h3>三、处罚规定</h3>
+                    <p>根据《城市生活垃圾管理办法》，对不按规定分类投放垃圾的行为，将处以50元以上200元以下罚款。</p>
+                    
+                    <h3>四、宣传培训</h3>
+                    <p>物业管理处将定期开展垃圾分类宣传培训活动，帮助业主掌握垃圾分类知识。如有疑问，可咨询物业客服热线：400-888-8888。</p>
+                    
+                    <p>让我们共同努力，做好垃圾分类，建设美好家园！</p>
+                    <p>物业管理处</p>
+                    <p>2025年1月12日</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 页脚 -->
+        <footer class="footer">
+            <div class="footer-content">
+                <p>© 2025 小区物业管理系统 版权所有</p>
+                <p>物业电话：400-888-8888</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                user: null,
+                searchKeyword: ''
+            },
+            methods: {
+                // 更新登录状态
+                updateLoginStatus() {
+                    var userStr = localStorage.getItem('user');
+                    try {
+                        this.user = JSON.parse(userStr);
+                    } catch (e) {
+                        this.user = null;
+                    }
+                },
+                
+                // 搜索房屋
+                searchHouse() {
+                    if (this.searchKeyword.trim()) {
+                        alert(`搜索: ${this.searchKeyword}`);
+                    }
+                },
+                
+                // 注销
+                logout() {
+                    localStorage.removeItem('user');
+                    this.user = null;
+                    window.location.href = 'index.html';
+                }
+            },
+            created() {
+                this.updateLoginStatus();
+            }
+        });
+    </script>
+    
+    <style>
+        /* 通知详情页样�?*/
+        .notice-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .notice-detail {
+            margin-bottom: 30px;
+        }
+        
+        .notice-detail h2 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        .notice-meta {
+            color: #999;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        
+        .notice-date,
+        .notice-author {
+            margin-right: 20px;
+        }
+        
+        .notice-content {
+            line-height: 1.8;
+            color: #555;
+        }
+        
+        .notice-content p {
+            margin-bottom: 15px;
+        }
+        
+        .notice-content h3 {
+            margin: 20px 0 10px 0;
+            color: #333;
+        }
+        
+        .notice-content h4 {
+            margin: 15px 0 8px 0;
+            color: #444;
+        }
+        
+        .notice-content ul {
+            margin-bottom: 15px;
+            padding-left: 20px;
+        }
+        
+        .notice-content li {
+            margin-bottom: 8px;
+        }
+        
+        .notice-content strong {
+            color: #333;
+        }
+    </style>
+</body>
+</html>

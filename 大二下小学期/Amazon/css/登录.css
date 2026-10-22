@@ -1,0 +1,137 @@
+/* 模态框基础样式 */
+.modal-toggle {
+  display: none;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 100;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s, visibility 0.3s;
+}
+
+.modal-close {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  cursor: pointer;
+}
+
+.modal-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 20px;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  z-index: 101;
+}
+
+.close-modal {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 24px;
+  cursor: pointer;
+  z-index: 102;
+}
+
+/* 登录模态框（蓝色主题） */
+.login-overlay {
+  background-color: rgba(0, 102, 192, 0.7); /* 蓝色半透明背景 */
+}
+
+.login-content {
+  background-color: #f0f8ff; /* 浅蓝色背景 */
+  border: 1px solid #0066c0; /* 蓝色边框 */
+}
+
+.login-form button {
+  background-color: #0066c0; /* 蓝色按钮 */
+  color: white;
+}
+
+/* 注册模态框（橙色主题） */
+.register-overlay {
+  background-color: rgba(255, 153, 0, 0.7); /* 橙色半透明背景 */
+}
+
+.register-content {
+  background-color: #fff8e1; /* 浅橙色背景 */
+  border: 1px solid #ff9900; /* 橙色边框 */
+}
+
+.register-form button {
+  background-color: #ff9900; /* 橙色按钮 */
+  color: white;
+}
+
+/* 表单通用样式 */
+.login-form,
+.register-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.login-form input,
+.register-form input {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.login-form button,
+.register-form button {
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.modal-footer {
+  margin-top: 15px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.modal-footer label {
+  color: white;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+/* 控制模态框显示/隐藏 */
+#login-toggle:checked ~ .login-overlay,
+#register-toggle:checked ~ .register-overlay {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* 按钮样式 */
+.login-button {
+  background-color: #0066c0;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: inline-block;
+  text-align: center;
+}
+
+.register-link {
+  color: #ff9900;
+  cursor: pointer;
+  text-decoration: underline;
+}

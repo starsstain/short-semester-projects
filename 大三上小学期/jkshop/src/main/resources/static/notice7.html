@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新房屋上市</title>
+    <script src="js/vue.js"></script>
+    <script src="js/base.js"></script>
+    <link rel="stylesheet" href="css/webindex.css">
+</head>
+<body>
+    <div class="container" id="app">
+        <!-- 顶部导航栏 (与其他页面保持一致) -->
+        <header class="header">
+            <div class="logo">
+                <img src="img/logo.png" alt="小区物业">
+                <h1>小区物业管理系统</h1>
+            </div>
+            
+            <div class="search-box">
+                <input type="text" placeholder="搜索房屋..." class="search-input" v-model="searchKeyword" @keyup.enter="searchHouse">
+                <button class="search-btn" @click="searchHouse">
+                    <img src="img/logo.png" alt="搜索" style="width: 20px; height: 20px; object-fit: contain;">
+                </button>
+            </div>
+            
+            <div class="user-menu">
+                <div class="user-info">
+                    <span v-if="user && user.name">
+                        {{ user.name }}
+                        <a href="javascript:void(0);" @click="logout" class="logout">退出登录</a>
+                    </span>
+                    <span v-else>
+                        <a href="login.html">登录</a> | 
+                        <a href="register.html">注册</a>
+                    </span>
+                </div>
+                
+                
+            </div>
+        </header>
+
+        <!-- 通知内容 -->
+        <div class="notice-container">
+            <div class="notice-detail">
+                <h2>新房屋上市</h2>
+                <div class="notice-meta">
+                    <span class="notice-date">2025-01-16</span>
+                    <span class="notice-author">物业管理处</span>
+                </div>
+                <div class="notice-content">
+                    <p>尊敬的业主：</p>
+                    <p>阳光小区新上架一批优质房源，位于小区中心位置，采光充足，通风良好。</p>
+                    <p>精装修，家具家电齐全，拎包入住。面积从60-120平方米不等，满足不同家庭需求。</p>
+                    <p>点击下方"查看房屋详情"按钮可直接查看相关房屋信息。</p>
+                    <div class="related-house">
+                        <h3>相关房屋</h3>
+                        <div class="house-card" @click="goToHouse(7)">
+                            <img src="img/logo.png" alt="阳光小区新房源">
+                            <div class="house-info">
+                                <div class="house-title">阳光小区 A栋101</div>
+                                <div class="house-price">¥2500/月</div>
+                                <div class="house-area">面积：85平方米</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>关于我们</h4>
+                    <p>阳光小区物业管理系统，提供优质的物业管理服务。</p>
+                </div>
+                <div class="footer-section">
+                    <h4>联系方式</h4>
+                    <p>电话：400-888-8888</p>
+                    <p>邮箱：info@yangguang.com</p>
+                </div>
+                <div class="footer-section">
+                    <h4>快速链接</h4>
+                    <ul>
+                        <li><a href="index.html">首页</a></li>
+                        <li><a href="login.html">登录</a></li>
+                        <li><a href="register.html">注册</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 小区物业管理系统 版权所有</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                user: null,
+                searchKeyword: '',
+            },
+            methods: {
+                // 搜索房屋
+                searchHouse() {
+                    if (this.searchKeyword.trim()) {
+                        alert(`搜索: ${this.searchKeyword}`);
+                    }
+                },
+                
+                // 跳转到房屋页
+                goToHouse(id) {
+                    window.location.href = `house.html?id=${id}`;
+                },
+                
+                // 更新登录状态
+                updateLoginStatus() {
+                    var userStr = localStorage.getItem('user');
+                    try {
+                        this.user = JSON.parse(userStr);
+                    } catch (e) {
+                        this.user = null;
+                    }
+                },
+                
+                // 注销
+                logout() {
+                    localStorage.removeItem('user');
+                    this.user = null;
+                    window.location.href = 'index.html';
+                }
+            },
+            created() {
+                this.updateLoginStatus();
+            }
+        });
+    </script>
+    
+    <style>
+        /* 通知详情页样式 */
+        .notice-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .notice-detail h2 {
+            margin-top: 0;
+            color: #333;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        
+        .notice-meta {
+            color: #888;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+        }
+        
+        .notice-meta span {
+            margin-right: 20px;
+        }
+        
+        .notice-content {
+            line-height: 1.8;
+            color: #333;
+        }
+        
+        .notice-content p {
+            margin-bottom: 15px;
+        }
+        
+        .related-house {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        .house-card {
+            display: flex;
+            align-items: center;
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .house-card:hover {
+            background: #f0f0f0;
+        }
+        
+        .house-card img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            margin-right: 15px;
+            border-radius: 4px;
+        }
+        
+        .house-info {
+            flex: 1;
+        }
+        
+        .house-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .house-price {
+            color: #ff6600;
+            font-weight: bold;
+        }
+        
+        .house-area {
+            color: #666;
+            font-size: 0.9em;
+        }
+    </style>
+</body>
+</html>

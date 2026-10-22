@@ -1,0 +1,119 @@
+/* 模态框基础样式 */
+.modal-toggle {
+  display: none;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 100;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s, visibility 0.3s;
+}
+
+.language-modal {
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.login-modal {
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.modal-close {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  cursor: pointer;
+}
+
+.modal-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color:black;
+  padding: 20px;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  z-index: 101;
+}
+
+.close-modal {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 24px;
+  cursor: pointer;
+  z-index: 102;
+}
+
+/* 语言选择界面样式 */
+.language-options {
+  margin: 20px 0;
+}
+
+.language-option {
+  display: block;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.language-option input {
+  margin-right: 10px;
+}
+
+.apply-language {
+  background-color: #0066c0;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 100%;
+}
+
+/* 登录界面样式 */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.login-form input {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.login-form button {
+  background-color: #0066c0;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.register-link {
+  text-align: center;
+  margin-top: 15px;
+  color: #0066c0;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+/* 控制模态框显示/隐藏 */
+#language-toggle:checked ~ .language-modal,
+#login-toggle:checked ~ .login-modal {
+  opacity: 1;
+  visibility: visible;
+}

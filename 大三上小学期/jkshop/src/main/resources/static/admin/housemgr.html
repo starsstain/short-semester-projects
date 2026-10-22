@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>房屋管理模块</title>
+    <script src="https://unpkg.com/vue@2/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <style>
+        body {
+            font-family: "Microsoft Yahei", "SimSun", Arial;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .course {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        .editPanel {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+        }
+        .editPanel label {
+            display: flex;
+            flex-direction: column;
+        }
+        .editPanel input[type="text"], .editPanel input[type="number"], .editPanel input[type="file"] {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 150px;
+            margin-top: 5px;
+        }
+        .editPanel input[type="button"] {
+            padding: 8px 15px;
+            background-color: #0075C7;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            align-self: flex-end;
+        }
+        .editPanel input[type="button"]:hover {
+            background-color: #005fa3;
+        }
+        .msg {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            text-align: center;
+        }
+        .msg.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .msg.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        tr:hover {
+            background-color: #f9f9f9;
+        }
+        button.edit, button.delete {
+            padding: 6px 12px;
+            margin: 0 3px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button.edit {
+            background-color: #ffc107;
+            color: #212529;
+        }
+        button.edit:hover {
+            background-color: #e0a800;
+        }
+        button.delete {
+            background-color: #dc3545;
+            color: white;
+        }
+        button.delete:hover {
+            background-color: #c82333;
+        }
+        .image-preview {
+            width: 100px;
+            height: auto;
+            border-radius: 4px;
+            margin-top: 5px;
+        }
+        .image-cell {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div id="app" class="course">
+  <h1>房屋管理模块</h1>
+  
+  <!-- 添加/编辑栏：移除类型选择框 -->
+  <div class="editPanel">
+    <label>
+      <span>房屋编码</span>
+      <input type="text" v-model="house.housecode" placeholder="请输入房屋编码" required>
+    </label>
+    <label>
+      <span>房屋名称</span>
+      <input type="text" v-model="house.housename" placeholder="请输入房屋名称">
+    </label>
+    <label>
+      <span>面积</span>
+      <input type="number" v-model="house.area" placeholder="面积" step="0.01">
+    </label>
+    <label>
+      <span>楼层</span>
+      <input type="number" v-model="house.floor" placeholder="楼层">
+    </label>
+    <label>
+      <span>房间号</span>
+      <input type="text" v-model="house.roomnum" placeholder="房间号">
+    </label>
+    <label>
+      <span>业主ID</span>
+      <input type="number" v-model="house.ownerid" placeholder="业主ID">
+    </label>
+    <label>
+      <span>房屋图片</span>
+      <input type="file" @change="handleFileUpload" accept="image/*">
+      <img v-if="house.imgurl" :src="getImagePath(house.imgurl)" alt="房屋图片" class="image-preview">
+    </label>
+    <input type="button" :value="isEditing ? '更新' : '添加'" @click="saveHouse">
+    <input v-if="isEditing" type="button" value="取消" @click="cancelEdit">
+  </div>
+
+  <!-- 提示消息 -->
+  <div v-if="message" class="msg" :class="msgClass">{{ message }}</div>
+
+  <!-- 数据列表：移除类型列 -->
+  <div class="list">
+     <table v-if="houseList.length">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>房屋编码</th>
+          <th>房屋名称</th>
+          <th>面积</th>
+          <th>楼层</th>
+          <th>房间号</th>
+          <th>业主ID</th>
+          <th>图片</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="h in houseList" :key="h.id">
+          <td>{{ h.id }}</td>
+          <td>{{ h.housecode }}</td>
+          <td>{{ h.housename }}</td>
+          <td>{{ h.area }}㎡</td>
+          <td>{{ h.floor }}</td>
+          <td>{{ h.roomnum }}</td>
+          <td>{{ h.ownerid }}</td>
+          <td class="image-cell">
+            <img v-if="h.imgurl" :src="getImagePath(h.imgurl)" alt="房屋图片" style="max-width: 50px; max-height: 50px;">
+            <span v-else>无图片</span>
+          </td>
+          <td>
+            <button class="edit" @click="editHouse(h.id)">编辑</button>
+            <button class="delete" @click="deleteHouse(h.id)">删除</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p v-else style="text-align:center;color:#666;padding:20px;">暂无数据</p>
+  </div>
+</div>
+
+<script>
+// 从当前页面路径计算API基础URL
+const currentPath = window.location.pathname;
+const basePath = currentPath.substring(0, currentPath.lastIndexOf('/')) + '/'; // 得到 /jkshop/admin/
+const apiBase = basePath.replace('/admin/', '/'); // 替换为 /jkshop/
+
+const base = {
+  url: window.location.protocol + '//' + window.location.host + apiBase
+};
+
+// 配置axios以处理跨域和错误处理
+axios.defaults.timeout = 10000;
+axios.interceptors.response.use(
+  response => response,
+  error => {
+    console.error('API请求错误:', error);
+    return Promise.reject(error);
+  }
+);
+
+new Vue({
+  el: '#app',
+  data: {
+    // 移除type/typename字段
+    house: { id: null, housecode: '', housename: '', area: '', floor: '', roomnum: '', imgurl: '', ownerid: '' },
+    houseList: [],
+    message: '',
+    msgClass: 'info',
+    isEditing: false
+  },
+  mounted() {
+    this.fetchAll();
+    // 移除fetchTypes调用
+  },
+  methods: {
+    /* 消息提示 */
+    showMsg(txt, type = 'info') {
+      this.message = txt;
+      this.msgClass = type;
+      setTimeout(() => this.message = '', 3000);
+    },
+
+    /* 保存：新增/更新 */
+    saveHouse() {
+      if (!this.house.housecode) { 
+        this.showMsg('房屋编码不能为空', 'error'); 
+        return; 
+      }
+      if (!this.house.housename) { 
+        this.showMsg('房屋名称不能为空', 'error'); 
+        return; 
+      }
+      
+      const method = this.isEditing ? 'put' : 'post';
+      const url = `${base.url}house`;
+      console.log(`发送${method.toUpperCase()}请求到:`, url, this.house);
+      
+      axios[method](url, this.house)
+        .then(res => { 
+          console.log('保存响应:', res.data);
+          if(res.data && res.data.code === 200)  {       
+            this.showMsg(this.isEditing ? '更新成功' : '添加成功', 'success');
+            this.fetchAll();
+            this.resetForm();  
+          } else{
+            this.showMsg(res.data?.message || '操作失败', 'error');
+          }       
+        })
+        .catch(err => {
+          console.error('保存错误:', err);
+          let errorMsg = '网络错误';
+          if (err.response) {
+            errorMsg = `服务器错误: ${err.response.status} - ${err.response.statusText}`;
+          } else if (err.request) {
+            errorMsg = '请求未收到响应，请检查后端服务是否启动';
+          } else {
+            errorMsg = err.message || '未知错误';
+          }
+          this.showMsg(errorMsg, 'error');
+        });
+    },
+
+    /* 编辑：移除type相关赋值 */
+    editHouse(id) {
+      this.isEditing = true;
+      console.log('编辑请求ID:', id);
+      axios.get(`${base.url}house/getById/${id}`)
+      .then(res=>{
+        console.log('编辑响应:', res.data);
+        if(res.data && res.data.code === 200) {
+          this.house = {
+            id: res.data.data.id,
+            housecode: res.data.data.housecode,
+            housename: res.data.data.housename,
+            area: res.data.data.area,
+            floor: res.data.data.floor,
+            roomnum: res.data.data.roomnum,
+            imgurl: res.data.data.imgurl,
+            ownerid: res.data.data.ownerid
+            // 移除type相关赋值
+          };
+        } else {
+          this.showMsg(res.data?.message || '获取房屋信息失败', 'error');
+          this.cancelEdit();
+        }
+      })
+      .catch(error => {
+        console.error('编辑错误:', error);
+        let errorMsg = '网络错误';
+        if (error.response) {
+          errorMsg = `服务器错误: ${error.response.status} - ${error.response.statusText}`;
+        } else if (error.request) {
+          errorMsg = '请求未收到响应，请检查后端服务是否启动';
+        } else {
+          errorMsg = error.message || '未知错误';
+        }
+        this.showMsg(errorMsg, 'error');
+        this.cancelEdit();
+      });
+    },
+    
+    // 取消编辑
+    cancelEdit() {
+      this.resetForm();
+    },
+
+    /* 删除 */
+    deleteHouse(id) {
+      if (!confirm('确定删除该房屋？')) return;
+      console.log('删除请求ID:', id);
+      
+      axios.delete(`${base.url}house/${id}`)
+        .then(res => {
+          console.log('删除响应:', res.data);
+          if(res.data && res.data.code === 200) {
+            this.showMsg('删除成功', 'success');
+            this.fetchAll();
+          } else {
+            this.showMsg(res.data?.message || '删除失败', 'error');
+          }
+        })
+        .catch(err => {
+          console.error('删除错误:', err);
+          let errorMsg = '网络错误';
+          if (err.response) {
+            errorMsg = `服务器错误: ${err.response.status} - ${err.response.statusText}`;
+          } else if (err.request) {
+            errorMsg = '请求未收到响应，请检查后端服务是否启动';
+          } else {
+            errorMsg = err.message || '未知错误';
+          }
+          this.showMsg(errorMsg, 'error');
+        });
+    },
+
+    /* 获取全部房屋 */
+    fetchAll() {
+      console.log('获取全部房屋请求');
+      console.log('请求URL:', `${base.url}house`);
+      axios.get(`${base.url}house`)
+        .then(res => {
+          console.log('获取全部房屋响应:', res.data);
+          if(res.data && res.data.code === 200) {
+            this.houseList = res.data.data || [];
+            this.showMsg(`共加载 ${this.houseList.length} 条记录`, 'success');
+          } else{
+            this.showMsg(res.data?.message || '获取数据失败', 'error');
+            this.houseList = [];
+          }
+        })
+        .catch(err => {
+          console.error('获取全部房屋错误:', err);
+          let errorMsg = '获取数据失败';
+          if (err.response) {
+            errorMsg = `服务器错误: ${err.response.status} - ${err.response.statusText}`;
+          } else if (err.request) {
+            errorMsg = '请求未收到响应，请检查后端服务是否启动';
+          } else {
+            errorMsg = err.message || '未知错误';
+          }
+          this.showMsg(errorMsg, 'error');
+          this.houseList = [];
+        });
+    },
+
+    /* 重置表单：移除type相关 */
+    resetForm() {
+      this.house = { id: null, housecode: '', housename: '', area: '', floor: '', roomnum: '', imgurl: '', ownerid: '' };
+      this.isEditing = false;
+      // 清空文件选择框
+      const fileInput = document.querySelector('input[type="file"]');
+      if (fileInput) fileInput.value = '';
+    },
+    
+    // 修复后的图片路径拼接方法 - 专门处理您本地的图片路径
+    getImagePath(path) {             
+        if (!path) {
+            return 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23eee"/><text x="50" y="50" font-family="Arial" font-size="14" fill="%23999" text-anchor="middle" dominant-baseline="middle">房屋图</text></svg>';
+        }
+        
+        // 如果已经是完整的URL，则直接返回
+        if (path.startsWith('http://') || path.startsWith('https://')) {
+            return path;
+        }
+        
+        // 检查是否包含上传路径关键词，如果是则构建正确的静态资源URL
+        if (path.includes('img/upload/house') || path.includes('house')) {
+            // 移除可能的重复路径部分
+            let cleanPath = path;
+            if (cleanPath.startsWith('/img/upload/house/')) {
+                cleanPath = cleanPath.substring(1);
+            } else if (cleanPath.startsWith('img/upload/house/')) {
+                // 不做处理，保持原样
+            } else if (!cleanPath.startsWith('img/upload/house/')) {
+                // 如果不是以标准路径开头，添加标准路径
+                cleanPath = cleanPath.startsWith('img/') ? cleanPath : 'img/upload/house/' + cleanPath;
+            }
+            
+            // 检查是否已经有host部分
+            const fullUrl = `${window.location.protocol}//${window.location.host}/jkshop/${cleanPath}`;
+            return fullUrl;
+        }
+        
+        // 如果路径以 / 开头，去掉开头的斜杠后拼接
+        if (path.startsWith('/')) {
+            return `${window.location.protocol}//${window.location.host}/jkshop${path}`;
+        }
+        
+        // 默认情况：拼接为完整的静态资源路径
+        return `${window.location.protocol}//${window.location.host}/jkshop/img/upload/house/${path}`;
+    },
+    
+    // 文件上传逻辑
+    handleFileUpload(event) {  
+        const file = event.target.files[0];
+        if (!file) {
+            this.showMsg('请选择要上传的图片', 'error');
+            return;
+        }
+        // 校验文件类型
+        const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+        if (!allowedTypes.includes(file.type)) {
+            this.showMsg('仅支持JPG/PNG/GIF/WEBP格式的图片', 'error');
+            event.target.files = null; 
+            return;
+        }
+        // 校验文件大小（限制5MB）
+        if (file.size > 5 * 1024 * 1024) {
+            this.showMsg('图片大小不能超过5MB', 'error');
+            event.target.files = null; 
+            return;
+        }
+        
+        const formData = new FormData();  
+        formData.append('file', file);  
+        
+        axios.post(`${base.url}house/upload`, formData, {                                  
+            headers: {  
+                'Content-Type': 'multipart/form-data'  
+            },
+            timeout: 30000 
+        }).then(response => {  
+            console.log('图片上传响应:', response.data);  
+            if (response.data && response.data.code === 200) {  
+                this.house.imgurl = response.data.data.imgUrl;                  
+                this.showMsg('图片上传成功', 'success');
+            } else {  
+                this.showMsg('图片上传失败: ' + (response.data?.message || '未知错误'), 'error');
+            }  
+        }).catch(error => {  
+            console.error('图片上传错误:', error);  
+            let errorMsg = '图片上传失败，请稍后再试';
+            if (error.response) {
+              errorMsg = `服务器错误: ${error.response.status} - ${error.response.statusText}`;
+            } else if (error.request) {
+              errorMsg = '请求未收到响应，请检查后端服务是否启动';
+            } else {
+              errorMsg = error.message || '未知错误';
+            }
+            this.showMsg(errorMsg, 'error');
+        });  
+    }
+  }
+});
+</script>
+</body>
+</html>
+
+
+

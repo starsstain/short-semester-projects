@@ -1,0 +1,1091 @@
+/* 重置样式 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Microsoft YaHei', 'Segoe UI', Arial, sans-serif;
+    line-height: 1.7;
+    color: #333;
+    background-color: #f5f7fa;
+    background-image: linear-gradient(135deg, rgba(0, 123, 255, 0.03) 0%, rgba(0, 86, 179, 0.01) 100%);
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* 顶部导航栏 */
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 0;
+    background: white;
+    border-bottom: 1px solid #e1e8ed;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+}
+
+.header:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo img {
+    width: 40px;
+    height: 40px;
+}
+
+.logo h1 {
+    font-size: 24px;
+    color: #007bff;
+    font-weight: 600;
+    text-shadow: 0 1px 3px rgba(0, 123, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.logo:hover h1 {
+    color: #0056b3;
+    text-shadow: 0 2px 5px rgba(0, 123, 255, 0.15);
+}
+
+/* 搜索框 */
+.search-box {
+    display: flex;
+    flex: 1;
+    max-width: 500px;
+    margin: 0 40px;
+    border-radius: 25px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+}
+
+.search-box:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.search-input {
+    flex: 1;
+    padding: 12px 20px;
+    border: 1px solid #e1e8ed;
+    border-right: none;
+    border-radius: 25px 0 0 25px;
+    font-size: 14px;
+    outline: none;
+    transition: all 0.3s ease;
+    background: #f8f9fa;
+}
+
+.search-input:focus {
+    border-color: #007bff;
+    background: white;
+}
+
+.search-btn {
+    padding: 0 25px;
+    background: #007bff;
+    border: none;
+    border-radius: 0 25px 25px 0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.search-btn img {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+}
+
+.search-btn:hover {
+    background: #0056b3;
+    transform: scale(1.05);
+}
+
+.search-btn:active {
+    transform: scale(0.98);
+}
+
+.search-icon {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border: 2px solid white;
+    border-radius: 50%;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.search-icon::after {
+    content: '';
+    position: absolute;
+    right: -4px;
+    bottom: -2px;
+    width: 2px;
+    height: 10px;
+    background: white;
+    transform: rotate(45deg);
+    transition: all 0.3s ease;
+}
+
+.search-btn:hover .search-icon {
+    border-width: 3px;
+}
+
+.search-btn:hover .search-icon::after {
+    height: 12px;
+    right: -6px;
+    bottom: -3px;
+}
+
+/* 用户菜单 */
+.user-menu {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+.user-info, .cart-link, .order-link {
+    font-size: 14px;
+    color: #555;
+    padding: 8px 15px;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+}
+
+.user-info:hover, .cart-link:hover, .order-link:hover {
+    background: #f0f7ff;
+    color: #007bff;
+    transform: translateY(-2px);
+    box-shadow: 0 2px 8px rgba(0, 123, 255, 0.15);
+}
+
+.logout {
+    margin-left: 10px;
+    color: #999;
+    padding: 5px 10px;
+    border-radius: 15px;
+    transition: all 0.3s ease;
+}
+
+.logout:hover {
+    color: #dc3545;
+    background: #fff5f5;
+}
+
+.user-menu a:hover {
+    color: #007bff;
+}
+
+/* 主横幅图 */
+.main-banner {
+    margin: 25px 0;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.12);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.main-banner:hover {
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+}
+
+.main-banner img {
+    width: 100%;
+    height: 320px;
+    object-fit: cover;
+    transition: all 0.3s ease;
+}
+
+.main-banner:hover img {
+    transform: scale(1.02);
+}
+
+/* 商品分类 */
+.categories {
+    margin: 45px 0;
+    padding: 35px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 3px 15px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+}
+
+.categories:hover {
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+}
+
+.categories h2 {
+    font-size: 22px;
+    margin-bottom: 35px;
+    color: #333;
+    font-weight: 600;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 12px;
+    display: inline-block;
+    transition: all 0.3s ease;
+    background: linear-gradient(90deg, #007bff, #0056b3);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.category-list {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 20px;
+}
+
+.category-item {
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 25px 15px;
+    border-radius: 20px;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, #f0f7ff 0%, #e6f2ff 100%);
+    border: 2px solid #e1e8ed;
+    box-shadow: 0 3px 10px rgba(0, 123, 255, 0.08);
+}
+
+.category-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(0, 123, 255, 0.2), transparent);
+    transition: all 0.5s ease;
+    z-index: 1;
+}
+
+.category-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 123, 255, 0.2);
+    border-color: #007bff;
+    background: linear-gradient(135deg, #e6f2ff 0%, #d1e7ff 100%);
+}
+
+.category-item:hover::before {
+    left: 100%;
+}
+
+.category-item p {
+    font-size: 18px;
+    color: #007bff;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 2;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    background: linear-gradient(90deg, #007bff, #0056b3);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.category-item:hover p {
+    transform: scale(1.05);
+    background: linear-gradient(90deg, #0056b3, #007bff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* 商品展示 */
+.products {
+    margin: 45px 0;
+}
+
+.products h2 {
+    font-size: 22px;
+    margin-bottom: 35px;
+    color: #333;
+    font-weight: 600;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 12px;
+    display: inline-block;
+    transition: all 0.3s ease;
+    background: linear-gradient(90deg, #007bff, #0056b3);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+
+.product-card {
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 3px 15px rgba(0, 0, 0, 0.08);
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    position: relative;
+}
+
+.product-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, #007bff, #0056b3);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.product-card:hover {
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+    transform: translateY(-8px);
+}
+
+.product-card:hover::before {
+    opacity: 1;
+}
+
+.product-img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    border-bottom: 1px solid #f0f7ff;
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.product-card:hover .product-img {
+    transform: scale(1.05);
+}
+
+.product-info {
+    padding: 20px;
+}
+
+.product-title {
+    font-size: 15px;
+    line-height: 1.6;
+    margin-bottom: 15px;
+    height: 48px;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    color: #333;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.product-card:hover .product-title {
+    color: #007bff;
+}
+
+.product-price {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px dashed #f0f7ff;
+}
+
+.price {
+    font-size: 22px;
+    color: #007bff;
+    font-weight: 700;
+    text-shadow: 0 1px 2px rgba(0, 123, 255, 0.15);
+}
+
+.sales {
+    font-size: 13px;
+    color: #888;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: #f8f9fa;
+    padding: 4px 10px;
+    border-radius: 12px;
+}
+
+.sales img {
+    width: 18px;
+    height: 18px;
+    opacity: 0.7;
+}
+
+.product-shop {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-top: 15px;
+    transition: all 0.3s ease;
+}
+
+.product-shop img {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid #f0f7ff;
+    object-fit: cover;
+    transition: all 0.3s ease;
+}
+
+.product-card:hover .product-shop img {
+    border-color: #007bff;
+    transform: scale(1.1);
+}
+
+.product-shop span {
+    font-size: 13px;
+    color: #666;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.product-card:hover .product-shop span {
+    color: #007bff;
+}
+
+/* 页脚 */
+.footer {
+    margin-top: 80px;
+    padding: 40px 0 20px;
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    color: white;
+    text-align: center;
+    border-radius: 20px 20px 0 0;
+    box-shadow: 0 -5px 20px rgba(0, 123, 255, 0.15);
+}
+
+.footer-content {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.footer p {
+    margin: 10px 0;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 15px;
+    line-height: 1.8;
+}
+
+.footer p:last-child {
+    margin-top: 30px;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.7);
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* 响应式设计 */
+@media (max-width: 1024px) {
+    .category-list {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    
+    .product-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 0 15px;
+    }
+    
+    .header {
+        flex-direction: column;
+        gap: 15px;
+        padding: 15px 0;
+    }
+    
+    .search-box {
+        max-width: 100%;
+        margin: 15px 0;
+    }
+    
+    .user-menu {
+        width: 100%;
+        justify-content: space-around;
+        gap: 10px;
+    }
+    
+    .main-banner img {
+        height: 200px;
+    }
+    
+    .category-list {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+    }
+    
+    .product-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .category-list {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .product-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* 登录页面样式 */
+.login-wrapper {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #f5f7fa 0%, #e4efe9 100%);
+    padding: 20px;
+}
+
+.login-container {
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+
+/* 登录logo */
+.login-logo {
+    margin-bottom: 40px;
+    animation: fadeIn 0.8s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.login-logo img {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 20px;
+}
+
+.login-logo h1 {
+    font-size: 28px;
+    color: #fe3b41;
+    margin-bottom: 10px;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.login-logo p {
+    color: #666;
+    font-size: 14px;
+}
+
+/* 登录表单盒子 */
+.login-box {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    padding: 40px;
+    animation: slideUp 0.6s ease 0.2s both;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 表单输入框 */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-input {
+    width: 100%;
+    padding: 15px 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: all 0.3s;
+    background-color: #f8f9fa;
+    color: #333;
+}
+
+.form-input:focus {
+    border-color: #fe3b41;
+    background-color: white;
+    box-shadow: 0 0 0 3px rgba(254, 59, 65, 0.1);
+    outline: none;
+}
+
+.form-input::placeholder {
+    color: #999;
+}
+
+/* 表单选项 */
+.form-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    font-size: 14px;
+}
+
+.remember-me {
+    display: flex;
+    align-items: center;
+    color: #666;
+    cursor: pointer;
+}
+
+.remember-me input {
+    margin-right: 8px;
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    accent-color: #fe3b41;
+}
+
+.forgot-password {
+    color: #fe3b41;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.forgot-password:hover {
+    color: #e82c32;
+    text-decoration: underline;
+}
+
+/* 登录按钮 */
+.login-btn {
+    width: 100%;
+    padding: 16px;
+    background: linear-gradient(135deg, #fe3b41 0%, #ff6b6b 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-bottom: 25px;
+    letter-spacing: 1px;
+}
+
+.login-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(254, 59, 65, 0.4);
+}
+
+.login-btn:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.login-btn:disabled {
+    background: linear-gradient(135deg, #cccccc 0%, #aaaaaa 100%);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* 注册链接 */
+.register-link {
+    text-align: center;
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 30px;
+}
+
+.register-link a {
+    color: #fe3b41;
+    font-weight: 500;
+    margin-left: 5px;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.register-link a:hover {
+    color: #e82c32;
+    text-decoration: underline;
+}
+
+/* 登录页脚 */
+.login-footer {
+    margin-top: 30px;
+    padding-top: 30px;
+    border-top: 1px solid #eee;
+}
+
+.divider {
+    position: relative;
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.divider::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #ddd, transparent);
+}
+
+.divider span {
+    position: relative;
+    display: inline-block;
+    padding: 0 15px;
+    background: white;
+    color: #999;
+    font-size: 14px;
+}
+
+/* 社交登录 */
+.social-login {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.social-btn {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #e0e0e0;
+    border-radius: 50%;
+    background: white;
+    cursor: pointer;
+    transition: all 0.3s;
+    padding: 0;
+}
+
+.social-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.social-btn.wechat:hover {
+    border-color: #07C160;
+    background-color: rgba(7, 193, 96, 0.05);
+}
+
+.social-btn.qq:hover {
+    border-color: #12B7F5;
+    background-color: rgba(18, 183, 245, 0.05);
+}
+
+.social-btn img {
+    width: 24px;
+    height: 24px;
+}
+
+/* 返回首页链接 */
+.back-home {
+    margin-top: 30px;
+}
+
+.back-home a {
+    color: #666;
+    font-size: 14px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: color 0.3s;
+}
+
+.back-home a:hover {
+    color: #fe3b41;
+}
+
+/* 页脚 */
+.login-footer-bottom {
+    text-align: center;
+    padding: 20px;
+    color: #999;
+    font-size: 12px;
+    background: transparent;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.login-footer-bottom p {
+    margin: 0;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .login-wrapper {
+        padding: 15px;
+        background: linear-gradient(135deg, #f5f7fa 0%, #e4efe9 100%);
+    }
+    
+    .login-box {
+        padding: 30px 20px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    .login-logo img {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .login-logo h1 {
+        font-size: 24px;
+    }
+}
+
+@media (max-width: 480px) {
+    .login-container {
+        max-width: 100%;
+    }
+    
+    .login-box {
+        padding: 25px 15px;
+    }
+    
+    .form-input {
+        padding: 12px 15px;
+    }
+    
+    .form-options {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .forgot-password {
+        align-self: flex-end;
+    }
+    
+    .social-login {
+        gap: 15px;
+    }
+    
+    .social-btn {
+        width: 45px;
+        height: 45px;
+    }
+    
+    .social-btn img {
+        width: 20px;
+        height: 20px;
+    }
+}
+
+/* 暗色模式支持 */
+@media (prefers-color-scheme: dark) {
+    .login-wrapper {
+        background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    }
+    
+    .login-box {
+        background: #2d2d2d;
+        border: 1px solid #404040;
+    }
+    
+    .login-logo h1 {
+        color: #ff6b6b;
+    }
+    
+    .login-logo p {
+        color: #aaa;
+    }
+    
+    .form-input {
+        background-color: #3d3d3d;
+        border-color: #505050;
+        color: #fff;
+    }
+    
+    .form-input:focus {
+        border-color: #ff6b6b;
+        background-color: #3d3d3d;
+    }
+    
+    .remember-me {
+        color: #aaa;
+    }
+    
+    .forgot-password {
+        color: #ff6b6b;
+    }
+    
+    .register-link {
+        color: #aaa;
+    }
+    
+    .register-link a {
+        color: #ff6b6b;
+    }
+    
+    .divider span {
+        background: #2d2d2d;
+        color: #888;
+    }
+    
+    .social-btn {
+        background: #3d3d3d;
+        border-color: #505050;
+    }
+    
+    .back-home a {
+        color: #aaa;
+    }
+    
+    .login-footer-bottom {
+        color: #888;
+    }
+}
+
+/* 通知详情页样式 */
+.notice-container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.notice-detail {
+    margin-bottom: 30px;
+}
+
+.notice-detail h2 {
+    font-size: 24px;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.notice-meta {
+    color: #999;
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+.notice-date,
+.notice-author {
+    margin-right: 20px;
+}
+
+.notice-content {
+    line-height: 1.8;
+    color: #555;
+}
+
+.notice-content p {
+    margin-bottom: 15px;
+}
+
+/* 相关房屋样式 */
+.related-house {
+    border-top: 1px solid #eee;
+    padding-top: 20px;
+}
+
+.related-house h3 {
+    font-size: 18px;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.related-house-list {
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+    padding-bottom: 10px;
+}
+
+.related-house-item {
+    width: 200px;
+    flex-shrink: 0;
+    background: #fff;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+.related-house-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.related-house-item img {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+}
+
+.related-house-info {
+    padding: 10px;
+}
+
+.related-house-title {
+    font-size: 14px;
+    margin-bottom: 5px;
+    height: 40px;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.related-house-price {
+    color: #ff4757;
+    font-weight: bold;
+    font-size: 16px;
+}

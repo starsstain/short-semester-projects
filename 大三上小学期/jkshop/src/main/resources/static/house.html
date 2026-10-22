@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>房屋详情 - 小区物业管理系统</title>
+    <script src="js/vue.js"></script>
+    <script src="js/base.js"></script>
+    <script src="js/axios.min.js"></script>
+    <link rel="stylesheet" href="css/webindex.css">
+    <link rel="stylesheet" href="css/webhouse.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container" id="app">
+        <!-- 顶部导航栏 (与首页保持一致) -->
+        <header class="header">
+            <div class="logo">
+                <img src="img/logo.png" alt="小区物业">
+                <h1>小区物业管理系统</h1>
+            </div>
+            
+            <div class="search-box">
+                <input type="text" placeholder="搜索房屋..." class="search-input" v-model="searchKeyword" @keyup.enter="searchHouse">
+                <button class="search-btn" @click="searchHouse">
+                    <img src="img/logo.png" alt="搜索" style="width: 20px; height: 20px; object-fit: contain;">
+                </button>
+            </div>
+            
+            <div class="user-menu">
+                <div class="user-info">
+                    <span v-if="user && user.name">
+                        {{ user.name }}
+                        <a href="javascript:void(0);" @click="logout" class="logout">退出登录</a>
+                    </span>
+                    <span v-else>
+                        <a href="login.html">登录</a> | 
+                        <a href="register.html">注册</a>
+                    </span>
+                </div>
+                <div class="cart-link">
+                    <a href="services.html">物业服务</a>
+                </div>
+                <div class="order-link">
+                    <a href="myhouse.html">我的房屋</a>
+                </div>
+            </div>
+        </header>
+
+        <!-- 房屋详情主体 -->
+        <div class="goods-detail-container">
+            <!-- 房屋图片 -->
+            <div class="goods-gallery">
+                <div class="main-image">
+                    <img :src="house.imgurl" :alt="house.housename" @click="showLargeImage(house.imgurl)">
+                </div>
+                <!-- 缩略图 (如果有的话) -->
+                <div class="thumbnails">
+                    <div class="thumbnail" v-for="(thumb, index) in thumbnails" :key="index" @click="selectThumbnail(thumb)">
+                        <img :src="thumb" :alt="'房屋图片' + (index+1)">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 房屋信息 -->
+            <div class="goods-info">
+                <div class="goods-title">
+                    <h1>{{ house.housename }}</h1>
+                    <div class="goods-tags">
+                        <span class="tag hot" v-if="house.rented">已出租</span>
+                        <span class="tag new" v-if="isNew">新上架</span>
+                        <span class="tag discount" v-if="hasDiscount">限时优惠</span>
+                    </div>
+                </div>
+                
+                <div class="goods-price">
+                    <div class="current-price">
+                        <span class="price-label">月租金</span>
+                        <span class="price-value">¥{{ house.price }}/月</span>
+                    </div>
+                    <div class="original-price" v-if="hasDiscount">
+                        <span class="original-label">原价</span>
+                        <span class="original-value">¥{{ house.originalPrice }}/月</span>
+                    </div>
+                    <div class="discount-info" v-if="hasDiscount">
+                        已优惠{{ discountRate }}%
+                    </div>
+                </div>
+                
+                <div class="goods-params">
+                    <div class="param-item">
+                        <span class="param-label">房屋编码</span>
+                        <span class="param-value">{{ house.housecode }}</span>
+                    </div>
+                    <div class="param-item">
+                        <span class="param-label">房屋类型</span>
+                        <span class="param-value">{{ houseTypeName }}</span>
+                    </div>
+                    <div class="param-item">
+                        <span class="param-label">户型</span>
+                        <span class="param-value">{{ house.occupied }} 人</span>
+                    </div>
+                    <div class="param-item">
+                        <span class="param-label">房屋面积</span>
+                        <span class="param-value">{{ house.area }} 平方米</span>
+                        <span class="stock-warning" v-if="house.area < 50">（小户型）</span>
+                    </div>
+                </div>
+                
+                <div class="rent-duration">
+                    <span class="duration-label">租赁期限</span>
+                    <div class="duration-control">
+                        <button @click="decreaseDuration">-</button>
+                        <span class="duration-value">{{ duration }} 个月</span>
+                        <button @click="increaseDuration">+</button>
+                    </div>
+                    <span class="stock-info">最短租期 1 个月</span>
+                </div>
+                
+                <div class="goods-actions">
+                    <button class="btn primary" @click="requestVisit">{{ user ? '预约看房' : '请先登录' }}</button>
+                    <button class="btn secondary" @click="applyRent">{{ house.rented ? '已被租用' : '申请租赁' }}</button>
+                    <button class="btn icon" @click="toggleFavorite">
+                        <i class="fas" :class="isFavorite ? 'fa-heart' : 'fa-heart'" style="color: red;"></i>
+                        {{ isFavorite ? '已收藏' : '收藏' }}
+                    </button>
+                    <button class="btn icon" @click="showShare">
+                        <i class="fas fa-share-alt"></i> 分享
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 房屋详情标签页 -->
+        <div class="goods-detail-tabs">
+            <div class="tab-nav">
+                <div class="tab-item" :class="{ active: activeTab === 'detail' }" @click="activeTab = 'detail'">房屋详情</div>
+                <div class="tab-item" :class="{ active: activeTab === 'images' }" @click="activeTab = 'images'">房屋图片</div>
+                <div class="tab-item" :class="{ active: activeTab === 'params' }" @click="activeTab = 'params'">房屋参数</div>
+                <div class="tab-item" :class="{ active: activeTab === 'reviews' }" @click="activeTab = 'reviews'">用户评价</div>
+                <div class="tab-item" :class="{ active: activeTab === 'faqs' }" @click="activeTab = 'faqs'">常见问题</div>
+            </div>
+            
+            <div class="tab-content">
+                <!-- 房屋详情 -->
+                <div class="tab-pane" v-if="activeTab === 'detail'" v-html="house.describes"></div>
+                
+                <!-- 房屋图片 -->
+                <div class="tab-pane" v-if="activeTab === 'images'">
+                    <div class="detail-images">
+                        <img v-for="(img, index) in detailImages" :key="index" :src="img" :alt="'详情图片' + (index+1)" @click="showLargeImage(img)">
+                    </div>
+                </div>
+                
+                <!-- 房屋参数 -->
+                <div class="tab-pane" v-if="activeTab === 'params'">
+                    <div class="product-params">
+                        <div class="param-group">
+                            <h3>房屋基本信息</h3>
+                            <div class="param-list">
+                                <div class="param-item" v-for="(param, index) in productParams" :key="index">
+                                    <span class="param-name">{{ param.name }}</span>
+                                    <span class="param-value">{{ param.value }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 用户评价 -->
+                <div class="tab-pane" v-if="activeTab === 'reviews'">
+                    <div class="review-summary">
+                        <div class="review-score">
+                            <span class="score-value">{{ reviewAverageScore.toFixed(1) }}</span>
+                            <span class="score-label">分</span>
+                        </div>
+                        <div class="review-stats">
+                            <div class="stat-item" v-for="stat in reviewStats" :key="stat.label">
+                                <span class="stat-label">{{ stat.label }}</span>
+                                <div class="stat-bar">
+                                    <div class="stat-progress" :style="{ width: stat.value + '%' }"></div>
+                                </div>
+                                <span class="stat-value">{{ stat.value }}%</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="review-list">
+                        <div class="review-item" v-for="review in reviews" :key="review.id">
+                            <div class="review-header">
+                                <span class="user-name">{{ review.userName }}</span>
+                                <span class="review-date">{{ review.createTime }}</span>
+                                <span class="review-score">{{ review.score }}分</span>
+                            </div>
+                            <div class="review-content">{{ review.content }}</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 常见问题 -->
+                <div class="tab-pane" v-if="activeTab === 'faqs'">
+                    <div class="faq-list">
+                        <div class="faq-item" v-for="(faq, index) in faqs" :key="index">
+                            <div class="faq-question">
+                                <span class="qa-index">Q{{ index + 1 }}</span>
+                                <span class="question-content">{{ faq.question }}</span>
+                            </div>
+                            <div class="faq-answer">
+                                <span class="qa-index">A</span>
+                                <span class="answer-content">{{ faq.answer }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 推荐房屋 -->
+        <div class="recommend-goods">
+            <h3>推荐房屋</h3>
+            <div class="recommend-list">
+                <div class="recommend-item" v-for="item in recommendHouses" :key="item.id" @click="goToHouse(item.id)">
+                    <div class="recommend-image">
+                        <img :src="item.imgurl" :alt="item.housename">
+                    </div>
+                    <div class="recommend-info">
+                        <div class="recommend-title">{{ item.housename }}</div>
+                        <div class="recommend-price">¥{{ item.price }}/月</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 页脚 -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>关于我们</h4>
+                    <p>阳光小区物业管理系统，提供优质的物业管理服务。</p>
+                </div>
+                <div class="footer-section">
+                    <h4>联系方式</h4>
+                    <p>电话：400-888-8888</p>
+                    <p>邮箱：info@yangguang.com</p>
+                </div>
+                <div class="footer-section">
+                    <h4>快速链接</h4>
+                    <ul>
+                        <li><a href="index.html">首页</a></li>
+                        <li><a href="login.html">登录</a></li>
+                        <li><a href="register.html">注册</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 小区物业管理系统 版权所有</p>
+                <p>物业电话：400-888-8888</p>
+            </div>
+        </footer>
+        
+        <!-- 大图查看模态框 -->
+        <div class="modal" v-if="showLargeImg" @click="showLargeImg = false">
+            <div class="modal-content" @click.stop>
+                <span class="close" @click="showLargeImg = false">&times;</span>
+                <img :src="currentLargeImage" :alt="'大图查看'">
+            </div>
+        </div>
+        
+        <!-- 分享模态框 -->
+        <div class="modal" v-if="showShareModal" @click="showShareModal = false">
+            <div class="modal-content share-modal" @click.stop>
+                <span class="close" @click="showShareModal = false">&times;</span>
+                <h3>分享到</h3>
+                <div class="share-options">
+                    <button class="share-btn wechat" @click="shareWechat">
+                        <i class="fab fa-weixin"></i> 微信
+                    </button>
+                    <button class="share-btn qq" @click="shareQQ">
+                        <i class="fab fa-qq"></i> QQ
+                    </button>
+                    <button class="share-btn weibo" @click="shareWeibo">
+                        <i class="fab fa-weibo"></i> 微博
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                houseId: '',
+                house: {
+                    id: '',
+                    housecode: '',
+                    housename: '',
+                    price: 0,
+                    area: 0,
+                    describes: '',
+                    type: 1,
+                    imgurl: 'img/logo.png',
+                    occupied: 1,
+                    originalPrice: 0,
+                    rented: false
+                },
+                houseTypeName: '',
+                typeitems: [
+                    {id: 1, typename: '一室一厅'},
+                    {id: 2, typename: '两室一厅'},
+                    {id: 3, typename: '两室两厅'},
+                    {id: 4, typename: '三室两厅'},
+                    {id: 5, typename: '四室两厅'}
+                ],
+                user: null,
+                duration: 1,
+                isFavorite: false,
+                activeTab: 'detail',
+                thumbnails: [],
+                detailImages: [],
+                productParams: [],
+                reviews: [],
+                faqs: [],
+                recommendHouses: [],
+                showLargeImg: false,
+                currentLargeImage: '',
+                showShareModal: false,
+                searchKeyword: '',
+                isNew: true,
+                hasDiscount: false,
+                discountRate: 0
+            },
+            computed: {
+                reviewAverageScore() {
+                    if (this.reviews.length === 0) return 5.0;
+                    const total = this.reviews.reduce((sum, review) => sum + review.score, 0);
+                    return total / this.reviews.length;
+                },
+                reviewStats() {
+                    const total = this.reviews.length;
+                    if (total === 0) return [
+                        { label: '好评', value: 100 },
+                        { label: '中评', value: 0 },
+                        { label: '差评', value: 0 }
+                    ];
+                    
+                    const good = this.reviews.filter(r => r.score >= 4).length;
+                    const medium = this.reviews.filter(r => r.score === 3).length;
+                    const bad = this.reviews.filter(r => r.score <= 2).length;
+                    
+                    return [
+                        { label: '好评', value: Math.round((good / total) * 100) },
+                        { label: '中评', value: Math.round((medium / total) * 100) },
+                        { label: '差评', value: Math.round((bad / total) * 100) }
+                    ];
+                }
+            },
+            methods: {
+                // 获取房屋ID
+                getHouseId() {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    return urlParams.get('id');
+                },
+                
+                // 获取房屋详情
+                getHouseDetail() {
+                    const id = this.getHouseId();
+                    if (!id) {
+                        alert('房屋不存在');
+                        window.location.href = 'index.html';
+                        return;
+                    }
+                    
+                    this.houseId = id;
+                    
+                    // 模拟获取房屋详情
+                    setTimeout(() => {
+                        this.house = {
+                            id: id,
+                            housecode: 'H' + id,
+                            housename: '阳光小区 A栋101',
+                            price: 2500,
+                            area: 85,
+                            describes: '<p>位于小区中心位置，采光充足，通风良好</p><p>精装修，家具家电齐全，拎包入住</p>',
+                            type: 2,
+                            imgurl: 'img/house_sample.jpg',
+                            occupied: 2,
+                            originalPrice: 2800,
+                            rented: false
+                        };
+                        this.initHouseData();
+                        this.getHouseTypeName();
+                        this.getRecommendHouses();
+                    }, 500);
+                },
+                
+                // 初始化房屋数据
+                initHouseData() {
+                    // 设置折扣信息
+                    if (this.house.originalPrice && this.house.originalPrice > this.house.price) {
+                        this.hasDiscount = true;
+                        this.discountRate = Math.round((1 - this.house.price / this.house.originalPrice) * 100);
+                    }
+                    
+                    // 生成缩略图
+                    this.thumbnails = [this.house.imgurl];
+                    
+                    // 模拟详情图
+                    this.detailImages = [
+                        this.house.imgurl,
+                        this.house.imgurl
+                    ];
+                    
+                    // 模拟房屋配置
+                    this.productParams = [
+                        { name: '房屋名称', value: this.house.housename },
+                        { name: '房屋编号', value: this.house.housecode },
+                        { name: '房屋面积', value: this.house.area + '平方米' },
+                        { name: '房屋类型', value: this.houseTypeName },
+                        { name: '上架时间', value: '2025-01-01' },
+                        { name: '所属小区', value: '阳光小区' }
+                    ];
+                    
+                    // 模拟评价数据
+                    this.reviews = [
+                        { id: 1, userName: '住户1', createTime: '2025-01-10', score: 5, content: '房屋条件很好，交通便利，非常满意' },
+                        { id: 2, userName: '住户2', createTime: '2025-01-05', score: 4, content: '环境不错，物业管理到位' },
+                        { id: 3, userName: '住户3', createTime: '2025-01-01', score: 5, content: '很舒适，会推荐朋友' }
+                    ];
+                    
+                    // 模拟常见问题
+                    this.faqs = [
+                        { question: '可以养宠物吗?', answer: '根据小区管理规定，可以养小型宠物，但需办理相关手续' },
+                        { question: '停车费是多少?', answer: '小区地下停车场月租300元，地上停车费200元' },
+                        { question: '是否允许转租?', answer: '需提前向物业报备，签订转租协议' }
+                    ];
+                },
+                
+                // 获取房屋类型名称
+                getHouseTypeName() {
+                    const type = this.typeitems.find(t => t.id == this.house.type);
+                    if (type) {
+                        this.houseTypeName = type.typename;
+                    }
+                },
+                
+                // 获取推荐房屋
+                getRecommendHouses() {
+                    // 模拟获取推荐房屋
+                    this.recommendHouses = [
+                        { id: 101, housename: '阳光小区 B栋101', price: 2200, imgurl: 'img/house_sample.jpg' },
+                        { id: 102, housename: '阳光小区 C栋101', price: 2800, imgurl: 'img/house_sample.jpg' },
+                        { id: 103, housename: '阳光小区 D栋101', price: 2400, imgurl: 'img/house_sample.jpg' },
+                        { id: 104, housename: '阳光小区 E栋101', price: 3000, imgurl: 'img/house_sample.jpg' }
+                    ];
+                },
+                
+                // 更新登录状态
+                updateLoginStatus() {
+                    var userStr = localStorage.getItem('user');
+                    try {
+                        this.user = JSON.parse(userStr);
+                        // 检查收藏状态
+                        this.checkFavoriteStatus();
+                    } catch (e) {
+                        this.user = null;
+                    }
+                },
+                
+                // 检查收藏状态
+                checkFavoriteStatus() {
+                    if (!this.user) return;
+                    // 这里应该调用API检查用户是否收藏了该房屋
+                    // 暂时模拟为false
+                    this.isFavorite = false;
+                },
+                
+                // 增加租赁期限
+                increaseDuration() {
+                    if (this.duration < 24) {
+                        this.duration++;
+                    }
+                },
+                
+                // 减少租赁期限
+                decreaseDuration() {
+                    if (this.duration > 1) {
+                        this.duration--;
+                    }
+                },
+                
+                // 预约看房
+                requestVisit() {
+                    if (!this.user) {
+                        alert('请先登录');
+                        window.location.href = 'login.html';
+                        return;
+                    }
+                    
+                    alert('预约成功，请等待工作人员联系');
+                },
+                
+                // 申请租赁
+                applyRent() {
+                    if (!this.user) {
+                        alert('请先登录');
+                        window.location.href = 'login.html';
+                        return;
+                    }
+                    
+                    if (this.house.rented) {
+                        alert('该房屋已被租用');
+                        return;
+                    }
+                    
+                    alert('申请租赁成功，请等待审核');
+                },
+                
+                // 切换收藏状态
+                toggleFavorite() {
+                    if (!this.user) {
+                        alert('请先登录');
+                        window.location.href = 'login.html';
+                        return;
+                    }
+                    
+                    this.isFavorite = !this.isFavorite;
+                    const message = this.isFavorite ? '已收藏该房屋' : '已取消收藏';
+                    alert(message);
+                    
+                    // 这里应该调用API更新收藏状态
+                },
+                
+                // 选择缩略图
+                selectThumbnail(thumb) {
+                    this.house.imgurl = thumb;
+                },
+                
+                // 显示大图
+                showLargeImage(img) {
+                    this.currentLargeImage = img;
+                    this.showLargeImg = true;
+                },
+                
+                // 显示分享模态框
+                showShare() {
+                    this.showShareModal = true;
+                },
+                
+                // 跳转到房屋页
+                goToHouse(id) {
+                    window.location.href = `house.html?id=${id}`;
+                },
+                
+                // 搜索房屋
+                searchHouse() {
+                    if (this.searchKeyword.trim()) {
+                        // 这里可以跳转到搜索结果页
+                        // 暂时只显示提示
+                        alert(`搜索: ${this.searchKeyword}`);
+                    }
+                },
+                
+                // 注销
+                logout() {
+                    localStorage.removeItem('user');
+                    this.user = null;
+                    window.location.href = 'index.html';
+                },
+                
+                // 分享功能
+                shareWechat() {
+                    alert('微信分享功能');
+                    this.showShareModal = false;
+                },
+                shareQQ() {
+                    alert('QQ分享功能');
+                    this.showShareModal = false;
+                },
+                shareWeibo() {
+                    alert('微博分享功能');
+                    this.showShareModal = false;
+                }
+            },
+            created() {
+                this.getHouseDetail();
+                this.updateLoginStatus();
+            }
+        });
+    </script>
+    
+    <style>
+        /* 房屋详情页专用样式 */
+        .goods-detail-container {
+            display: flex;
+            gap: 30px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .goods-gallery {
+            flex: 1;
+            max-width: 50%;
+        }
+
+        .goods-info {
+            flex: 1;
+            max-width: 50%;
+        }
+
+        .main-image img {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .thumbnails {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .thumbnail {
+            width: 80px;
+            height: 80px;
+            overflow: hidden;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .goods-title h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .goods-tags {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .tag {
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .tag.hot {
+            background-color: #ff4757;
+        }
+
+        .tag.new {
+            background-color: #2ed573;
+        }
+
+        .tag.discount {
+            background-color: #ffa502;
+        }
+
+        .goods-price {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .current-price .price-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #ff4757;
+        }
+
+        .original-price {
+            margin-top: 5px;
+        }
+
+        .original-value {
+            text-decoration: line-through;
+            color: #999;
+        }
+
+        .discount-info {
+            margin-top: 5px;
+            color: #ffa502;
+        }
+
+        .goods-params {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .param-item {
+            display: flex;
+            margin-bottom: 10px;
+        }
+
+        .param-label {
+            width: 100px;
+            color: #999;
+        }
+
+        .param-value {
+            color: #333;
+        }
+
+        .rent-duration {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .duration-control {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .duration-control button {
+            width: 30px;
+            height: 30px;
+            border: 1px solid #ddd;
+            background-color: #fff;
+            cursor: pointer;
+        }
+
+        .duration-value {
+            margin: 0 10px;
+        }
+
+        .goods-actions {
+            margin-top: 30px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn.primary {
+            background-color: #ff4757;
+            color: #fff;
+        }
+
+        .btn.secondary {
+            background-color: #2ed573;
+            color: #fff;
+        }
+
+        .btn.icon {
+            background-color: #fff;
+            border: 1px solid #ddd;
+        }
+
+        .goods-detail-tabs {
+            margin: 20px auto;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .tab-nav {
+            display: flex;
+            border-bottom: 1px solid #eee;
+        }
+
+        .tab-item {
+            padding: 15px 20px;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .tab-item.active {
+            color: #ff4757;
+            border-bottom: 2px solid #ff4757;
+        }
+
+        .tab-pane {
+            padding: 20px;
+        }
+
+        .detail-images {
+            display: flex;
+            gap: 10px;
+        }
+
+        .detail-images img {
+            width: 200px;
+            height: 150px;
+            object-fit: cover;
+            cursor: pointer;
+        }
+
+        .product-params {
+            margin-top: 20px;
+        }
+
+        .param-group h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .review-summary {
+            display: flex;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+        }
+
+        .review-score {
+            margin-right: 30px;
+        }
+
+        .score-value {
+            font-size: 48px;
+            font-weight: bold;
+            color: #ff4757;
+        }
+
+        .review-stats {
+            flex: 1;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            width: 60px;
+        }
+
+        .stat-bar {
+            flex: 1;
+            height: 8px;
+            background-color: #eee;
+            border-radius: 4px;
+            margin: 0 10px;
+        }
+
+        .stat-progress {
+            height: 100%;
+            background-color: #ff4757;
+            border-radius: 4px;
+        }
+
+        .review-list {
+            margin-top: 20px;
+        }
+
+        .review-item {
+            padding: 20px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .faq-item {
+            margin-bottom: 20px;
+        }
+
+        .faq-question {
+            display: flex;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .faq-answer {
+            display: flex;
+            color: #666;
+        }
+
+        .qa-index {
+            margin-right: 10px;
+            color: #ff4757;
+        }
+
+        .recommend-goods {
+            margin: 20px auto;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+
+        .recommend-list {
+            display: flex;
+            gap: 20px;
+            margin-top: 15px;
+        }
+
+        .recommend-item {
+            width: 200px;
+            cursor: pointer;
+        }
+
+        .recommend-image img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        .recommend-title {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        .recommend-price {
+            margin-top: 5px;
+            color: #ff4757;
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .modal-content img {
+            max-width: 90vw;
+            max-height: 90vh;
+        }
+
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 30px;
+            cursor: pointer;
+            color: #fff;
+        }
+
+        .share-modal {
+            width: 300px;
+        }
+
+        .share-options {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .share-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            color: #fff;
+        }
+
+        .share-btn.wechat {
+            background-color: #2ed573;
+        }
+
+        .share-btn.qq {
+            background-color: #3742fa;
+        }
+
+        .share-btn.weibo {
+            background-color: #ff4757;
+        }
+    </style>
+</body>
+</html>
